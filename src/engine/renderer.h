@@ -6,16 +6,16 @@
 
 class object {
 public:
-    object(float radius, shader &objectShader, const glm::vec3 &color);
+    object(shader &objectShader, float radius, const glm::vec3 &color);
+    static void initGeometry(float radius, shader &objectShader, const glm::vec3 &color);
 
     void draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection);
 private:
-    std::vector<GLfloat> vertices;
-    std::vector<GLuint> indices;
+    static bool isInitialized;
 
-    GLuint VAO;
-    GLuint VBO;
-    GLuint EBO;
+    //since every sphere has the same geometry, its possible to use static VAO's, VBO's and EBO's
+    static GLuint VAO, VBO, EBO;
+    static GLsizei indexCount;
 
     static constexpr GLuint stacks = 64;
     static constexpr GLuint sectors = 64;
@@ -25,5 +25,5 @@ private:
     shader &objectShader;
     const glm::vec3 color;
 
-    void createSphere();
+    static void createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices);
 };

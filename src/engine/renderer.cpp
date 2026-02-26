@@ -3,12 +3,26 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 #include <cmath>
 #include <numbers>
 
-object::object(float radius, shader &objectShader, const glm::vec3 &color):
-objectShader(objectShader), radius(radius), color(color) {
-    createSphere();
+GLuint object::VAO = 0;
+GLuint object::VBO = 0;
+GLuint object::EBO = 0;
+GLsizei object::indexCount = 0;
+bool object::isInitialized = false;
+
+object::object(shader &objectShader, float radius, const glm::vec3 &color):
+objectShader(objectShader), radius(radius), color(color) {}
+
+void object::initGeometry(float radius, shader &objectShader, const glm::vec3 &color) {
+    if(isInitialized) { return; }
+
+    std::vector<GLfloat> vertices;
+    std::vector<GLuint> indices;
+
+    createSphere(vertices, indices);
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -29,9 +43,12 @@ objectShader(objectShader), radius(radius), color(color) {
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
+
+    indexCount = static_cast<GLsizei>(indices.size());
+    isInitialized = true;
 }
 
-void object::createSphere() {
+void object::createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
     for(int i = 0; i <= stacks; i++) {
         float phi = std::numbers::pi_v<float> * i / stacks;
 
@@ -41,10 +58,6 @@ void object::createSphere() {
             GLfloat x = sin(phi) * cos(theta);
             GLfloat y = sin(phi) * sin(theta);
             GLfloat z = cos(phi);
-
-            vertices.push_back(x);
-            vertices.push_back(y);
-            vertices.push_back(z);
 
             vertices.push_back(x);
             vertices.push_back(y);
@@ -81,7 +94,7 @@ void object::draw(const glm::vec3 &position, const glm::mat4 &model, const glm::
     objectShader.setVec3("color", color);
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
 }
