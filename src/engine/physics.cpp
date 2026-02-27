@@ -11,11 +11,11 @@ position(position), velocity(velocity), acceleration(0.0f), mass(mass) {
     this->radius = std::cbrt((3.0f * volume) / (4.0f * std::numbers::pi_v<float>));
 }
 
-float physicsObject::applyForce(const glm::vec3 &force) {
+void physicsObject::applyForce(const glm::vec3 &force) {
     this->acceleration += force / this->mass;
 }
 
-float physicsObject::applyVelocity(float deltaTime) {
+void physicsObject::applyVelocity(float deltaTime) {
     this->velocity += this->acceleration * deltaTime;
     this->position += this->velocity * deltaTime;
 

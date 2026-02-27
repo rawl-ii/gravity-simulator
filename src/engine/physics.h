@@ -5,9 +5,8 @@ class physicsObject {
 public:
     physicsObject(glm::vec3 position, glm::vec3 velocity, float mass, float density);
 
-    float applyForce(const glm::vec3 &force);
-
-    float applyVelocity(float deltaTime);
+    void applyForce(const glm::vec3 &force);
+    void applyVelocity(float deltaTime);
 
     float getMass();
     float getRadius();
