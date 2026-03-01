@@ -3,11 +3,16 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include <map>
+
+enum class SHADER_TYPE {
+    PLANET,
+    STAR  
+};
 
 class object {
 public:
-    object(shader &objectShader, float radius, const glm::vec3 &color);
-    static void initGeometry(float radius, shader &objectShader, const glm::vec3 &color);
+    object(SHADER_TYPE type, float radius, const glm::vec3 &color);
 
     void draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection);
 private:
@@ -21,9 +26,13 @@ private:
     static constexpr GLuint sectors = 64;
 
     const float radius;
-
-    shader &objectShader;
     const glm::vec3 color;
+
+    SHADER_TYPE type;
+    static std::map<SHADER_TYPE, std::unique_ptr<shader>> shaderLibrary;
+
+    static void initGeometry(float radius);
+    static void initShaders();
 
     static void createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices);
 };

@@ -6,6 +6,10 @@
 #include <vector>
 #include <cmath>
 #include <numbers>
+#include <memory>
+#include <map>
+
+std::map<SHADER_TYPE, std::unique_ptr<shader>> object::shaderLibrary;
 
 GLuint object::VAO = 0;
 GLuint object::VBO = 0;
@@ -13,12 +17,18 @@ GLuint object::EBO = 0;
 GLsizei object::indexCount = 0;
 bool object::isInitialized = false;
 
-object::object(shader &objectShader, float radius, const glm::vec3 &color):
-objectShader(objectShader), radius(radius), color(color) {}
+object::object(SHADER_TYPE type, float radius, const glm::vec3 &color):
+type(type), radius(radius), color(color) {
 
-void object::initGeometry(float radius, shader &objectShader, const glm::vec3 &color) {
-    if(isInitialized) { return; }
+    if(!isInitialized) {
+        initShaders();
+        initGeometry(radius);
+    }
 
+    isInitialized = true;
+}
+
+void object::initGeometry(float radius) {
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
 
@@ -30,7 +40,7 @@ void object::initGeometry(float radius, shader &objectShader, const glm::vec3 &c
 
     glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -45,7 +55,11 @@ void object::initGeometry(float radius, shader &objectShader, const glm::vec3 &c
     glBindVertexArray(0);
 
     indexCount = static_cast<GLsizei>(indices.size());
-    isInitialized = true;
+}
+
+void object::initShaders() {
+    shaderLibrary[SHADER_TYPE::PLANET] = std::make_unique<shader>("src/game/shaders/planet.vert", "src/game/shaders/planet.frag");
+    shaderLibrary[SHADER_TYPE::STAR] = std::make_unique<shader>("src/game/shaders/star.vert", "src/game/shaders/star.frag");
 }
 
 void object::createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
@@ -82,6 +96,7 @@ void object::createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& i
 }
 
 void object::draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) {
+    shader &objectShader = *shaderLibrary[type];
     objectShader.use();
 
     glm::mat4 modelMatrix = glm::translate(model, position);
