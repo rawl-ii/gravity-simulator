@@ -14,13 +14,25 @@ struct physicsArgs {
     float density;
 };
 
-class gameObject {
+class planetManager {
 public:
     static void addStar(physicsArgs pArgs, glm::vec3 color, float radius);
     static void addPlanet(physicsArgs pArgs, glm::vec3 color, float radius);
 
     static void drawStars(const glm::mat4 &view, const glm::mat4 &projection);
     static void drawPlanets(const glm::mat4 &view, const glm::mat4 &projection);
+
+    static void updatePhysics(float deltaTime, const glm::vec3 force);
+private:
+    static std::vector<gameObject*> objects;
+
+    static std::vector<std::unique_ptr<gameObject>> stars;
+    static std::vector<std::unique_ptr<gameObject>> planets;
+};
+
+class gameObject {
+public:
+    friend class planetManager;    
 
     float getMass();
     float getRadius();
@@ -30,23 +42,8 @@ private:
     physicsObject physics;
     renderObject render;
 
-    gameObject(physicsArgs pArgs, SHADER_TYPE type, glm::vec3 color, float radius);
-    
-    static std::vector<std::unique_ptr<gameObject>> stars;
-    static std::vector<std::unique_ptr<gameObject>> planets;
+    gameObject(physicsArgs pArgs, SHADER_TYPE type, glm::vec3 color);
 
-    //physics
-    const float mass;
-
-    glm::vec3 position;
-    glm::vec3 velocity;
-    glm::vec3 acceleration;
-
-    //render
     SHADER_TYPE type;
-
     const glm::vec3 color;
-
-    //both
-    const float radius;
 };
