@@ -9,15 +9,15 @@
 #include <memory>
 #include <map>
 
-std::map<SHADER_TYPE, std::unique_ptr<shader>> object::shaderLibrary;
+std::map<SHADER_TYPE, std::unique_ptr<shader>> renderObject::shaderLibrary;
 
-GLuint object::VAO = 0;
-GLuint object::VBO = 0;
-GLuint object::EBO = 0;
-GLsizei object::indexCount = 0;
-bool object::isInitialized = false;
+GLuint renderObject::VAO = 0;
+GLuint renderObject::VBO = 0;
+GLuint renderObject::EBO = 0;
+GLsizei renderObject::indexCount = 0;
+bool renderObject::isInitialized = false;
 
-object::object(SHADER_TYPE type, float radius, const glm::vec3 &color):
+renderObject::renderObject(SHADER_TYPE type, float radius, const glm::vec3 &color):
 type(type), radius(radius), color(color) {
 
     if(!isInitialized) {
@@ -28,7 +28,7 @@ type(type), radius(radius), color(color) {
     isInitialized = true;
 }
 
-void object::initGeometry(float radius) {
+void renderObject::initGeometry(float radius) {
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
 
@@ -57,12 +57,12 @@ void object::initGeometry(float radius) {
     indexCount = static_cast<GLsizei>(indices.size());
 }
 
-void object::initShaders() {
+void renderObject::initShaders() {
     shaderLibrary[SHADER_TYPE::PLANET] = std::make_unique<shader>("src/game/shaders/planet.vert", "src/game/shaders/planet.frag");
     shaderLibrary[SHADER_TYPE::STAR] = std::make_unique<shader>("src/game/shaders/star.vert", "src/game/shaders/star.frag");
 }
 
-void object::createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
+void renderObject::createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
     for(int i = 0; i <= stacks; i++) {
         float phi = std::numbers::pi_v<float> * i / stacks;
 
@@ -95,7 +95,7 @@ void object::createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& i
     }
 }
 
-void object::draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) {
+void renderObject::draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) {
     shader &objectShader = *shaderLibrary[type];
     objectShader.use();
 

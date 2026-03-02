@@ -4,15 +4,16 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <map>
+#include <memory>
 
 enum class SHADER_TYPE {
     PLANET,
     STAR  
 };
 
-class object {
+class renderObject {
 public:
-    object(SHADER_TYPE type, float radius, const glm::vec3 &color);
+    renderObject(SHADER_TYPE type, float radius, const glm::vec3 &color);
 
     void draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection);
 private:
