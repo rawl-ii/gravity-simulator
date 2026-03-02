@@ -6,7 +6,6 @@
 #include <vector>
 #include <memory>
 
-//TODO: working objects manager
 gameObject::gameObject(physicsArgs pArgs, SHADER_TYPE type, glm::vec3 color): 
 type(type),
 color(color),

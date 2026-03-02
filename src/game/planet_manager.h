@@ -5,7 +5,6 @@
 #include <vector>
 #include <memory>
 
-//TODO: working objects manager
 struct physicsArgs {
     glm::vec3 position;
     glm::vec3 velocity;
