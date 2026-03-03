@@ -12,14 +12,14 @@ color(color),
 physics(pArgs.position, pArgs.velocity, pArgs.mass, pArgs.density),
 render(type, physics.getRadius(), color) {}
 
-void planetManager::addStar(physicsArgs pArgs, glm::vec3 color, float radius) {
+void planetManager::addStar(physicsArgs pArgs, glm::vec3 color) {
     auto newStar = std::make_unique<gameObject>(pArgs, SHADER_TYPE::STAR, color);
 
     stars.push_back(std::move(newStar));
     objects.push_back(newStar.get());
 }
 
-void planetManager::addPlanet(physicsArgs pArgs, glm::vec3 color, float radius) {
+void planetManager::addPlanet(physicsArgs pArgs, glm::vec3 color) {
     auto newPlanet = std::make_unique<gameObject>(pArgs, SHADER_TYPE::PLANET, color);
 
     planets.push_back(std::move(newPlanet));
@@ -40,9 +40,22 @@ void planetManager::drawPlanets(const glm::mat4 &view, const glm::mat4 &projecti
     }
 }
 
-void planetManager::updatePhysics(float deltaTime, const glm::vec3 force) {
+void planetManager::updatePhysics(float deltaTime) {
+    if(objects.size() < 2) { return; }
+    
+    for(int i = 0; i < objects.size(); i++) {
+        for(int j = i + 1; j < objects.size(); j++) {
+            physicsObject obj1 = objects[i]->physics;
+            physicsObject obj2 = objects[j]->physics;
+
+            glm::vec3 force = physicsObject::calculateGravity(obj1, obj2);
+            
+            obj1.applyForce(force);
+            obj2.applyForce(-force);
+        }
+    }
+
     for(auto& object : objects) {
-        object->physics.applyForce(force);
         object->physics.applyVelocity(deltaTime);
     }
 }

@@ -15,8 +15,8 @@ struct physicsArgs {
 
 class planetManager {
 public:
-    static void addStar(physicsArgs pArgs, glm::vec3 color, float radius);
-    static void addPlanet(physicsArgs pArgs, glm::vec3 color, float radius);
+    static void addStar(physicsArgs pArgs, glm::vec3 color);
+    static void addPlanet(physicsArgs pArgs, glm::vec3 color);
 
     static void drawStars(const glm::mat4 &view, const glm::mat4 &projection);
     static void drawPlanets(const glm::mat4 &view, const glm::mat4 &projection);
