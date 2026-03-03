@@ -20,6 +20,8 @@ set(SOURCE_FILES
     src/engine/physics.cpp
     src/engine/window.cpp
     src/engine/camera.cpp
+
+    src/game/planet_manager.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
