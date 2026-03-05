@@ -3,32 +3,44 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <filesystem>
 #include <vector>
 #include <cmath>
 #include <numbers>
 #include <memory>
 #include <map>
 
-std::map<SHADER_TYPE, std::unique_ptr<shader>> renderObject::shaderLibrary;
+std::map<ENTITY_TYPE, std::unique_ptr<shader>> renderer::shaderLibrary;
 
-GLuint renderObject::VAO = 0;
-GLuint renderObject::VBO = 0;
-GLuint renderObject::EBO = 0;
-GLsizei renderObject::indexCount = 0;
-bool renderObject::isInitialized = false;
+GLuint renderer::VAO = 0;
+GLuint renderer::VBO = 0;
+GLuint renderer::EBO = 0;
+GLsizei renderer::indexCount = 0;
+bool renderer::isInitialized = false;
 
-renderObject::renderObject(SHADER_TYPE type, float radius, const glm::vec3 &color):
+renderer::renderer(ENTITY_TYPE type, float radius, const glm::vec3 &color):
 type(type), radius(radius), color(color) {
 
     if(!isInitialized) {
         initShaders();
         initGeometry(radius);
+        
+        isInitialized = true;
     }
-
-    isInitialized = true;
 }
 
-void renderObject::initGeometry(float radius) {
+void renderer::terminate() {
+    glDeleteVertexArrays(1, &VAO);
+    
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    
+    shaderLibrary.clear();
+    isInitialized = false;
+}
+
+void renderer::initGeometry(float radius) {
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
 
@@ -57,12 +69,19 @@ void renderObject::initGeometry(float radius) {
     indexCount = static_cast<GLsizei>(indices.size());
 }
 
-void renderObject::initShaders() {
-    shaderLibrary[SHADER_TYPE::PLANET] = std::make_unique<shader>("src/game/shaders/planet.vert", "src/game/shaders/planet.frag");
-    shaderLibrary[SHADER_TYPE::STAR] = std::make_unique<shader>("src/game/shaders/star.vert", "src/game/shaders/star.frag");
+void renderer::initShaders() {
+    const std::string base = std::filesystem::current_path().string();
+
+    shaderLibrary[ENTITY_TYPE::PLANET] = std::make_unique<shader>
+    ((base + "/../src/game/shaders/planet.vert").c_str(),
+    (base + "/../src/game/shaders/planet.frag").c_str());
+
+    shaderLibrary[ENTITY_TYPE::STAR] = std::make_unique<shader>
+    ((base + "/../src/game/shaders/star.vert").c_str(),
+    (base + "/../src/game/shaders/star.frag").c_str());
 }
 
-void renderObject::createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
+void renderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> &indices) {
     for(int i = 0; i <= stacks; i++) {
         float phi = std::numbers::pi_v<float> * i / stacks;
 
@@ -95,7 +114,7 @@ void renderObject::createSphere(std::vector<GLfloat>& vertices, std::vector<GLui
     }
 }
 
-void renderObject::draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) {
+void renderer::draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) {
     shader &objectShader = *shaderLibrary[type];
     objectShader.use();
 

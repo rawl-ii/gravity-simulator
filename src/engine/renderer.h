@@ -6,14 +6,15 @@
 #include <map>
 #include <memory>
 
-enum class SHADER_TYPE {
+enum class ENTITY_TYPE {
     PLANET,
     STAR  
 };
 
-class renderObject {
+class renderer {
 public:
-    renderObject(SHADER_TYPE type, float radius, const glm::vec3 &color);
+    renderer(ENTITY_TYPE type, float radius, const glm::vec3 &color);
+    static void terminate();
 
     void draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection);
 private:
@@ -29,11 +30,11 @@ private:
     const float radius;
     const glm::vec3 color;
 
-    SHADER_TYPE type;
-    static std::map<SHADER_TYPE, std::unique_ptr<shader>> shaderLibrary;
+    ENTITY_TYPE type;
+    static std::map<ENTITY_TYPE, std::unique_ptr<shader>> shaderLibrary;
 
     static void initGeometry(float radius);
     static void initShaders();
 
-    static void createSphere(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices);
+    static void createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> &indices);
 };
