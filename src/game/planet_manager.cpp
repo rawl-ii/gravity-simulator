@@ -6,21 +6,35 @@
 #include <vector>
 #include <memory>
 
-gameObject::gameObject(physicsArgs pArgs, SHADER_TYPE type, glm::vec3 color): 
+// definitions for static members declared in planet_manager.h
+std::vector<entity*> planetManager::objects;
+std::vector<std::unique_ptr<entity>> planetManager::stars;
+std::vector<std::unique_ptr<entity>> planetManager::planets;
+
+entity::entity(physicsArgs pArgs, ENTITY_TYPE type, glm::vec3 color): 
 type(type),
 color(color),
 physics(pArgs.position, pArgs.velocity, pArgs.mass, pArgs.density),
 render(type, physics.getRadius(), color) {}
 
+void planetManager::terminate() {
+    stars.clear();
+    planets.clear();
+
+    objects.clear();
+
+    renderer::terminate();
+}
+
 void planetManager::addStar(physicsArgs pArgs, glm::vec3 color) {
-    auto newStar = std::make_unique<gameObject>(pArgs, SHADER_TYPE::STAR, color);
+    std::unique_ptr<entity> newStar(new entity(pArgs, ENTITY_TYPE::STAR, color));
 
     stars.push_back(std::move(newStar));
     objects.push_back(newStar.get());
 }
 
 void planetManager::addPlanet(physicsArgs pArgs, glm::vec3 color) {
-    auto newPlanet = std::make_unique<gameObject>(pArgs, SHADER_TYPE::PLANET, color);
+    std::unique_ptr<entity> newPlanet(new entity(pArgs, ENTITY_TYPE::PLANET, color));
 
     planets.push_back(std::move(newPlanet));
     objects.push_back(newPlanet.get());
@@ -60,7 +74,7 @@ void planetManager::updatePhysics(float deltaTime) {
     }
 }
 
-float gameObject::getMass() { return physics.getMass(); }
-float gameObject::getRadius() { return physics.getRadius(); }
+float entity::getMass() { return physics.getMass(); }
+float entity::getRadius() { return physics.getRadius(); }
 
-glm::vec3 gameObject::getPosition() { return physics.getPosition(); }
+glm::vec3 entity::getPosition() { return physics.getPosition(); }

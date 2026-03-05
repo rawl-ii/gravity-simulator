@@ -13,23 +13,26 @@ struct physicsArgs {
     float density;
 };
 
+class entity;
 class planetManager {
 public:
+    static void terminate();
+
     static void addStar(physicsArgs pArgs, glm::vec3 color);
     static void addPlanet(physicsArgs pArgs, glm::vec3 color);
 
     static void drawStars(const glm::mat4 &view, const glm::mat4 &projection);
     static void drawPlanets(const glm::mat4 &view, const glm::mat4 &projection);
 
-    static void updatePhysics(float deltaTime, const glm::vec3 force);
+    static void updatePhysics(float deltaTime);
 private:
-    static std::vector<gameObject*> objects;
+    static std::vector<entity*> objects;
 
-    static std::vector<std::unique_ptr<gameObject>> stars;
-    static std::vector<std::unique_ptr<gameObject>> planets;
+    static std::vector<std::unique_ptr<entity>> stars;
+    static std::vector<std::unique_ptr<entity>> planets;
 };
 
-class gameObject {
+class entity {
 public:
     friend class planetManager;    
 
@@ -38,11 +41,11 @@ public:
 
     glm::vec3 getPosition();
 private:
+    entity(physicsArgs pArgs, ENTITY_TYPE type, glm::vec3 color);
+
     physicsObject physics;
-    renderObject render;
+    renderer render;
 
-    gameObject(physicsArgs pArgs, SHADER_TYPE type, glm::vec3 color);
-
-    SHADER_TYPE type;
+    ENTITY_TYPE type;
     const glm::vec3 color;
 };
