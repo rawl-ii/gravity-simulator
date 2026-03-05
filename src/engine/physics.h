@@ -3,7 +3,7 @@
 
 class physicsObject {
 public:
-    static constexpr float GRAVITY = 100.0f;
+    static float GRAVITY;
 
     physicsObject(glm::vec3 position, glm::vec3 velocity, float mass, float density);
 

@@ -2,6 +2,8 @@
 #include <glm/glm.hpp>
 #include <cmath>
 
+float physicsObject::GRAVITY = 100.0f; 
+
 physicsObject::physicsObject(glm::vec3 position, glm::vec3 velocity, float mass, float density):
 position(position), velocity(velocity), acceleration(0.0f), mass(mass) {
 
