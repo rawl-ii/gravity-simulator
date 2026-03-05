@@ -89,8 +89,14 @@ void camera::processKeyboardInput(GLFWwindow* window, float deltaTime) {
     }
 }
 
+glm::mat4 camera::getViewMatrix() {
+    return glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp); 
+}
+glm::mat4 camera::getProjectionMatrix(float fovy, float windowWidth, float windowHeight, float near, float far) {
+    return glm::perspective(glm::radians(55.0f), (windowWidth / windowHeight), near, far);
+}
+
 glm::vec3 camera::getCameraPosition() { return cameraPosition; }
-glm::mat4 camera::getViewMatrix() { return glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp); }
 
 void camera::enableCursor() { cursorEnabled = true; }
 void camera::disableCursor() { cursorEnabled = false; }

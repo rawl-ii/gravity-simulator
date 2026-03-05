@@ -9,6 +9,7 @@ public:
     static float sensitivity;
 
     static glm::mat4 getViewMatrix();
+    static glm::mat4 getProjectionMatrix(float fovy, float windowWidth, float windowHeight, float near, float far);
     static glm::vec3 getCameraPosition();
 
     static void enableCursor();
