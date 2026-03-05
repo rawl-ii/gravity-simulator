@@ -14,8 +14,9 @@ struct physicsArgs {
 };
 
 class entity;
-class planetManager {
+class entityManager {
 public:
+    static void init();
     static void terminate();
 
     static void addStar(physicsArgs pArgs, glm::vec3 color);
@@ -27,6 +28,8 @@ public:
     static void updatePhysics(float deltaTime);
 private:
     static std::vector<entity*> objects;
+    static std::unique_ptr<renderer> starRenderer;
+    static std::unique_ptr<renderer> planetRenderer;
 
     static std::vector<std::unique_ptr<entity>> stars;
     static std::vector<std::unique_ptr<entity>> planets;
@@ -34,7 +37,7 @@ private:
 
 class entity {
 public:
-    friend class planetManager;    
+    friend class entityManager;    
 
     float getMass();
     float getRadius();
@@ -44,7 +47,6 @@ private:
     entity(physicsArgs pArgs, ENTITY_TYPE type, glm::vec3 color);
 
     physicsObject physics;
-    renderer render;
 
     ENTITY_TYPE type;
     const glm::vec3 color;

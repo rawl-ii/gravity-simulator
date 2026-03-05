@@ -13,10 +13,13 @@ int main() {
     win window(800, 600, "Gravity simulator");
     glEnable(GL_DEPTH_TEST);
 
-    camera::cameraSpeed = 75.0f;
+    entityManager::init();
+
+    camera::setInitialPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+    camera::speed = 75.0f;
     camera::processCursorCallback(window.getWindow());
 
-    planetManager::addPlanet({glm::vec3(0.0f), glm::vec3(0.0f), 5000.0f, 200.0f}, glm::vec3(1.0f));
+    entityManager::addPlanet({glm::vec3(0.0f), glm::vec3(0.0f), 5000.0f, 200.0f}, glm::vec3(1.0f));
 
     while(!window.windowShouldClose()) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -29,16 +32,16 @@ int main() {
         glm::mat4 view = camera::getViewMatrix();
         glm::mat4 projection = camera::getProjectionMatrix(55.0f, window.getWidth(), window.getHeight(), 0.01f, 750.0f);
 
-        planetManager::updatePhysics(deltaTime);
-        planetManager::drawPlanets(view, projection);
+        entityManager::updatePhysics(deltaTime);
+        entityManager::drawPlanets(view, projection);
 
         window.swapBuffers();
         win::pollEvents();
     }
 
-    planetManager::terminate();
+    entityManager::terminate();
     win::terminate();
-    
+
     return 0;   
 }
 
