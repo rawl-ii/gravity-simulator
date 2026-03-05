@@ -14,7 +14,7 @@ struct light {
     float constant;
     float linear;
     float quadratic;
-}
+};
 
 uniform light pointLights[MAX_POINT_LIGHTS];
 uniform vec3 viewerPos;
