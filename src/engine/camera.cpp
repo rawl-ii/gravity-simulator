@@ -3,54 +3,68 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
-glm::vec3 camera::cameraPosition = glm::vec3(0.0f);
+glm::vec3 camera::position = glm::vec3(0.0f);
 
-glm::vec3 camera::cameraFront = glm::vec3(0.0f, 0.0f, 1.0f);
-glm::vec3 camera::cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-glm::vec3 camera::cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+glm::vec3 camera::front = glm::vec3(0.0f, 0.0f, 1.0f);
+glm::vec3 camera::up = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 camera::right = glm::normalize(glm::cross(front, up));
 
-float camera::cameraSpeed = 5.0f;
+float camera::speed = 5.0f;
 float camera::sensitivity = 0.05f;
 
-float camera::cameraPitch = 0.0f;
-float camera::cameraYaw = 0.0f;
+float camera::pitch = 0.0f;
+float camera::yaw = 0.0f;
 
 bool camera::cursorEnabled = false;
 
-void camera::updateCameraVectors() {
-    glm::vec3 front;
+void camera::setInitialPosition(glm::vec3 initialPosition) {
+    position = initialPosition;
+}
 
-    front.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-    front.y = sin(glm::radians(cameraPitch));
-    front.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+void camera::updateVectors() {
+    glm::vec3 newFront;
 
-    cameraFront = glm::normalize(front);
-    cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
-    cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
+    newFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    newFront.y = sin(glm::radians(pitch));
+    newFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+    front = glm::normalize(newFront);
+    right = glm::normalize(glm::cross(front, worldUp));
+    up = glm::normalize(glm::cross(right, front));
 }
 
 void camera::processCursorInput(GLFWwindow* window, double xOffset, double yOffset) {
-    static bool firstMouse;
+    static bool firstMouse = true;
     static float lastX, lastY;
-
+    
     if(cursorEnabled) {
         firstMouse = true;
-        return; 
+        return;
     }
 
     if(firstMouse) {
         lastX = xOffset;
         lastY = yOffset;
+
+        firstMouse = false;
     }
 
-    float xPos = (xOffset - lastX) * sensitivity;
-    float yPos = (yOffset - lastY) * sensitivity;
+    float xPos = (lastX - xOffset) * sensitivity;
+    float yPos = (lastY - yOffset) * sensitivity;
+    
     lastX = xOffset;
     lastY = yOffset;
     
-    cameraYaw = std::min(cameraYaw -= cameraYaw, 89.0f);
-    cameraPitch = std::max(cameraPitch += yPos, -89.0f);
+    yaw -= xPos;
+    pitch += yPos;
+    
+    pitch = std::min(pitch, 89.0f);
+    pitch = std::max(pitch, -89.0f);
+
+    std::cout << "pitch: " << pitch << ' ' << "yaw: " << yaw << '\n';
+    updateVectors();
 }
 
 void camera::processCursorCallback(GLFWwindow* window) {
@@ -65,38 +79,38 @@ void camera::processCursorCallback(GLFWwindow* window) {
 }
 
 void camera::processKeyboardInput(GLFWwindow* window, float deltaTime) {
-    float cameraVelocity = cameraSpeed * deltaTime;
+    float cameraVelocity = speed * deltaTime;
 
     if(glfwGetKey(window, GLFW_KEY_W)) {
-        cameraPosition += cameraFront * cameraVelocity;
+        position += front * cameraVelocity;
     }
     else if(glfwGetKey(window, GLFW_KEY_S)) {
-        cameraPosition -= cameraFront * cameraVelocity;
+        position -= front * cameraVelocity;
     }
 
     if(glfwGetKey(window, GLFW_KEY_A)) {
-        cameraPosition -= cameraRight * cameraVelocity;
+        position -= right * cameraVelocity;
     }
     else if(glfwGetKey(window, GLFW_KEY_D)) {
-        cameraPosition += cameraRight * cameraVelocity;
+        position += right * cameraVelocity;
     }
 
     if(glfwGetKey(window, GLFW_KEY_Q)) {
-        cameraPosition += cameraUp * cameraVelocity;
+        position -= up * cameraVelocity;
     }
     else if(glfwGetKey(window, GLFW_KEY_E)) {
-        cameraPosition -= cameraUp * cameraVelocity;
+        position += up * cameraVelocity;
     }
 }
 
 glm::mat4 camera::getViewMatrix() {
-    return glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp); 
+    return glm::lookAt(position, position + front, up); 
 }
 glm::mat4 camera::getProjectionMatrix(float fovy, float windowWidth, float windowHeight, float near, float far) {
     return glm::perspective(glm::radians(55.0f), (windowWidth / windowHeight), near, far);
 }
 
-glm::vec3 camera::getCameraPosition() { return cameraPosition; }
+glm::vec3 camera::getPosition() { return position; }
 
 void camera::enableCursor() { cursorEnabled = true; }
 void camera::disableCursor() { cursorEnabled = false; }
