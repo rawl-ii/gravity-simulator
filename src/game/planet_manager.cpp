@@ -9,18 +9,18 @@
 // definitions for static members declared in planet_manager.h
 std::unique_ptr<renderer> entityManager::starRenderer = nullptr;
 std::unique_ptr<renderer> entityManager::planetRenderer = nullptr;
+
 std::vector<entity*> entityManager::objects;
 std::vector<std::unique_ptr<entity>> entityManager::stars;
 std::vector<std::unique_ptr<entity>> entityManager::planets;
 
-entity::entity(physicsArgs pArgs, ENTITY_TYPE type, glm::vec3 color): 
-type(type),
+entity::entity(physicsArgs pArgs, glm::vec3 color):
 color(color),
 physics(pArgs.position, pArgs.velocity, pArgs.mass, pArgs.density) {}
 
 void entityManager::init() {    
-    starRenderer = std::make_unique<renderer>(ENTITY_TYPE::STAR);
-    planetRenderer = std::make_unique<renderer>(ENTITY_TYPE::PLANET);
+    starRenderer = std::make_unique<renderer>();
+    planetRenderer = std::make_unique<renderer>();
 }
 
 void entityManager::terminate() {
@@ -32,14 +32,14 @@ void entityManager::terminate() {
 }
 
 void entityManager::addStar(physicsArgs pArgs, glm::vec3 color) {
-    std::unique_ptr<entity> newStar(new entity(pArgs, ENTITY_TYPE::STAR, color));
+    std::unique_ptr<entity> newStar(new entity(pArgs, color));
 
     objects.push_back(newStar.get());
     stars.push_back(std::move(newStar));
 }
 
 void entityManager::addPlanet(physicsArgs pArgs, glm::vec3 color) {
-    std::unique_ptr<entity> newPlanet(new entity(pArgs, ENTITY_TYPE::PLANET, color));
+    std::unique_ptr<entity> newPlanet(new entity(pArgs, color));
 
     objects.push_back(newPlanet.get());
     planets.push_back(std::move(newPlanet));
@@ -47,13 +47,18 @@ void entityManager::addPlanet(physicsArgs pArgs, glm::vec3 color) {
 
 void entityManager::drawStars(const glm::mat4 &view, const glm::mat4 &projection) {
     for(auto& star : stars) {
-        starRenderer->draw(star->getPosition(), star->getRadius( ), star->color, view, projection);
+        starRenderer->draw(star->getPosition(), star->getRadius(), star->color, view, projection);
     }
 }
 
-void entityManager::drawPlanets(const glm::mat4 &view, const glm::mat4 &projection) {
+void entityManager::drawPlanets(const glm::mat4 &view, const glm::mat4 &projection) {    
+    std::vector<lightData> shaderData;
+    for(auto& star : stars) {
+        shaderData.push_back({star->getPosition(), star->color}); 
+    }
+
     for(auto& planet : planets) {
-        planetRenderer->draw(planet->getPosition(), planet->getRadius(), planet->color, view, projection);
+        planetRenderer->draw(planet->getPosition(), planet->getRadius(), planet->color, shaderData, view, projection);
     }
 }
 

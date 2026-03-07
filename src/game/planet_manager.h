@@ -44,10 +44,9 @@ public:
 
     glm::vec3 getPosition();
 private:
-    entity(physicsArgs pArgs, ENTITY_TYPE type, glm::vec3 color);
+    entity(physicsArgs pArgs, glm::vec3 color);
 
     physicsObject physics;
 
-    ENTITY_TYPE type;
     const glm::vec3 color;
 };
