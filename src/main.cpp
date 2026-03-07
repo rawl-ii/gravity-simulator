@@ -15,12 +15,12 @@ int main() {
 
     entityManager::init();
 
-    camera::setInitialPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+    camera::setInitialPosition(glm::vec3(0.0f, 0.0f, -50.0f));
     camera::speed = 75.0f;
     camera::processCursorCallback(window.getWindow());
 
-    entityManager::addStar({glm::vec3(0.0f), glm::vec3(-10.0f, 0.0f, 0.0f), 50.0f, 5.0f}, glm::vec3(1.0f, 0.0f, 0.0f));
-    entityManager::addStar({glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(10.0f, 0.0f, 0.0f), 50.0f, 5.0f}, glm::vec3(1.0f, 1.0f, 0.0f));
+    entityManager::addPlanet({glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(-10.0f, 0.0f, 0.0f), 50.0f, 5.0f}, glm::vec3(0.54f, 0.89f, 1.0f));
+    entityManager::addStar({glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(0.0f), 50.0f, 5.0f}, glm::vec3(0.82f, 0.3f, 0.3f));
 
     while(!window.windowShouldClose()) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -35,6 +35,7 @@ int main() {
 
         entityManager::updatePhysics(deltaTime);
         entityManager::drawStars(view, projection);
+        entityManager::drawPlanets(view, projection);
 
         window.swapBuffers();
         win::pollEvents();
