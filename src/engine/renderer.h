@@ -11,11 +11,17 @@ enum class ENTITY_TYPE {
     STAR  
 };
 
+struct lightData {
+    glm::vec3 position;
+    glm::vec3 color;
+};
+
 class renderer {
 public:
-    renderer(ENTITY_TYPE type);
+    renderer();
     static void terminate();
 
+    void draw(glm::vec3 position, float radius, glm::vec3 color, std::vector<lightData> lightSources, glm::mat4 view, glm::mat4 projection);
     void draw(glm::vec3 position, float radius, glm::vec3 color, glm::mat4 view, glm::mat4 projection);
 private:
     static bool isInitialized;
@@ -27,7 +33,6 @@ private:
     static constexpr GLuint stacks = 64;
     static constexpr GLuint sectors = 64;
 
-    ENTITY_TYPE type;
     static std::map<ENTITY_TYPE, std::unique_ptr<shader>> shaderLibrary;
 
     static void initGeometry();

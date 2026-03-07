@@ -19,9 +19,7 @@ GLuint renderer::EBO = 0;
 GLsizei renderer::indexCount = 0;
 bool renderer::isInitialized = false;
 
-renderer::renderer(ENTITY_TYPE type):
-type(type) {
-
+renderer::renderer() {
     if(!isInitialized) {
         initShaders();
         initGeometry();
@@ -118,8 +116,35 @@ void renderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> 
     }
 }
 
+void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, std::vector<lightData> lightSources, glm::mat4 view, glm::mat4 projection) {
+    shader &objectShader = *shaderLibrary[ENTITY_TYPE::PLANET];
+    objectShader.use();
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::scale(model, glm::vec3(radius));
+
+    objectShader.setMat4("model", model);   
+    objectShader.setMat4("view", view);   
+    objectShader.setMat4("projection", projection);
+
+    objectShader.setVec3("color", color);
+    for(int i = 0; i < lightSources.size(); i++) {
+        std::string base = "pointLights[" + std::to_string(i) + "].";
+
+        objectShader.setVec3((base + "position").c_str(), lightSources[i].position);
+        objectShader.setVec3((base + "ambient").c_str(), glm::vec3(0.05f));
+        objectShader.setVec3((base + "diffuse").c_str(), lightSources[i].color * glm::vec3(0.2f));
+    }
+
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+}
+
 void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, glm::mat4 view, glm::mat4 projection) {
-    shader &objectShader = *shaderLibrary[type];
+    shader &objectShader = *shaderLibrary[ENTITY_TYPE::STAR];
     objectShader.use();
 
     glm::mat4 model = glm::mat4(1.0f);
