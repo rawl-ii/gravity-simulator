@@ -15,7 +15,7 @@ float camera::speed = 5.0f;
 float camera::sensitivity = 0.05f;
 
 float camera::pitch = 0.0f;
-float camera::yaw = 0.0f;
+float camera::yaw = 90.0f;
 
 bool camera::cursorEnabled = false;
 
@@ -49,6 +49,7 @@ void camera::processCursorInput(GLFWwindow* window, double xOffset, double yOffs
         lastY = yOffset;
 
         firstMouse = false;
+        return;
     }
 
     float xPos = (lastX - xOffset) * sensitivity;
