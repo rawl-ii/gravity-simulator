@@ -19,12 +19,12 @@ GLuint renderer::EBO = 0;
 GLsizei renderer::indexCount = 0;
 bool renderer::isInitialized = false;
 
-renderer::renderer(ENTITY_TYPE type, float radius, const glm::vec3 &color):
-type(type), radius(radius), color(color) {
+renderer::renderer(ENTITY_TYPE type):
+type(type) {
 
     if(!isInitialized) {
         initShaders();
-        initGeometry(radius);
+        initGeometry();
         
         isInitialized = true;
     }
@@ -40,7 +40,7 @@ void renderer::terminate() {
     isInitialized = false;
 }
 
-void renderer::initGeometry(float radius) {
+void renderer::initGeometry() {
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
 
@@ -95,6 +95,10 @@ void renderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> 
             vertices.push_back(x);
             vertices.push_back(y);
             vertices.push_back(z);
+            
+            vertices.push_back(x);
+            vertices.push_back(y);
+            vertices.push_back(z);
         }
     }
 
@@ -114,14 +118,15 @@ void renderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> 
     }
 }
 
-void renderer::draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) {
+void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, glm::mat4 view, glm::mat4 projection) {
     shader &objectShader = *shaderLibrary[type];
     objectShader.use();
 
-    glm::mat4 modelMatrix = glm::translate(model, position);
-    modelMatrix = glm::scale(modelMatrix, glm::vec3(radius));
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::scale(model, glm::vec3(radius));
 
-    objectShader.setMat4("model", modelMatrix);   
+    objectShader.setMat4("model", model);   
     objectShader.setMat4("view", view);   
     objectShader.setMat4("projection", projection);
 

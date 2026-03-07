@@ -13,10 +13,10 @@ enum class ENTITY_TYPE {
 
 class renderer {
 public:
-    renderer(ENTITY_TYPE type, float radius, const glm::vec3 &color);
+    renderer(ENTITY_TYPE type);
     static void terminate();
 
-    void draw(const glm::vec3 &position, const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection);
+    void draw(glm::vec3 position, float radius, glm::vec3 color, glm::mat4 view, glm::mat4 projection);
 private:
     static bool isInitialized;
 
@@ -27,13 +27,10 @@ private:
     static constexpr GLuint stacks = 64;
     static constexpr GLuint sectors = 64;
 
-    const float radius;
-    const glm::vec3 color;
-
     ENTITY_TYPE type;
     static std::map<ENTITY_TYPE, std::unique_ptr<shader>> shaderLibrary;
 
-    static void initGeometry(float radius);
+    static void initGeometry();
     static void initShaders();
 
     static void createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> &indices);
