@@ -67,8 +67,8 @@ void entityManager::updatePhysics(float deltaTime) {
 
             glm::vec3 force = physicsObject::calculateGravity(obj1, obj2);
 
-            obj1.applyForce(force);
-            obj2.applyForce(-force);
+            obj1.applyForce(-force);
+            obj2.applyForce(force);
         }
     }
 
