@@ -5,29 +5,31 @@
 
 class camera {
 public:
-    static float cameraSpeed;
+    static float speed;
     static float sensitivity;
 
     static glm::mat4 getViewMatrix();
     static glm::mat4 getProjectionMatrix(float fovy, float windowWidth, float windowHeight, float near, float far);
-    static glm::vec3 getCameraPosition();
 
+    static glm::vec3 getPosition();
+    static void setInitialPosition(glm::vec3 initialPosition);
+ 
     static void enableCursor();
     static void disableCursor();
 
     static void processKeyboardInput(GLFWwindow* window, float deltaTime);
     static void processCursorCallback(GLFWwindow* window);
 private:
-    static glm::vec3 cameraPosition;
+    static glm::vec3 position;
 
     static constexpr glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    static glm::vec3 cameraUp;
-    static glm::vec3 cameraFront;
-    static glm::vec3 cameraRight;
+    static glm::vec3 up;
+    static glm::vec3 front;
+    static glm::vec3 right;
 
-    static float cameraPitch, cameraYaw;
+    static float pitch, yaw;
     static bool cursorEnabled;
 
     static void processCursorInput(GLFWwindow* window, double xOffset, double yOffset);
-    static void updateCameraVectors();
+    static void updateVectors();
 };
