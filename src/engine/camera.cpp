@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 
 glm::vec3 camera::position = glm::vec3(0.0f);
 
@@ -64,7 +63,6 @@ void camera::processCursorInput(GLFWwindow* window, double xOffset, double yOffs
     pitch = std::min(pitch, 89.0f);
     pitch = std::max(pitch, -89.0f);
 
-    std::cout << "pitch: " << pitch << ' ' << "yaw: " << yaw << '\n';
     updateVectors();
 }
 
