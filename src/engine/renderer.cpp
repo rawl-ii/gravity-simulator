@@ -101,7 +101,7 @@ void renderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> 
     }
 
     for(int i = 0; i < stacks; i++) {
-        for(int j = 0; j < stacks; j++) {
+        for(int j = 0; j < sectors; j++) {
             int first = i * (sectors + 1) + j;
             int second = first + sectors + 1;
 
