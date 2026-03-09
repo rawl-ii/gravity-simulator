@@ -21,7 +21,8 @@ set(SOURCE_FILES
     src/engine/window.cpp
     src/engine/camera.cpp
 
-    src/game/planet_manager.cpp
+    src/game/entity_manager.cpp
+    src/game/grid_manager.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
@@ -29,8 +30,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/src/engine
-    ${CMAKE_SOURCE_DIR}/src/game
+    ${CMAKE_SOURCE_DIR}/game
 
     ${GLFW_INCLUDE_DIRS}
 )
