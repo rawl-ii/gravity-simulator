@@ -23,17 +23,17 @@ renderer::renderer() {
     if(!isInitialized) {
         initShaders();
         initGeometry();
-        
+
         isInitialized = true;
     }
 }
 
 void renderer::terminate() {
     glDeleteVertexArrays(1, &VAO);
-    
+
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    
+
     shaderLibrary.clear();
     isInitialized = false;
 }
@@ -93,7 +93,7 @@ void renderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> 
             vertices.push_back(x);
             vertices.push_back(y);
             vertices.push_back(z);
-            
+
             vertices.push_back(x);
             vertices.push_back(y);
             vertices.push_back(z);
@@ -124,17 +124,17 @@ void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, std::vect
     model = glm::translate(model, position);
     model = glm::scale(model, glm::vec3(radius));
 
-    objectShader.setMat4("model", model);   
-    objectShader.setMat4("view", view);   
+    objectShader.setMat4("model", model);
+    objectShader.setMat4("view", view);
     objectShader.setMat4("projection", projection);
 
     objectShader.setVec3("color", color);
     for(int i = 0; i < lightSources.size(); i++) {
-        std::string base = "pointLights[" + std::to_string(i) + "].";
+        std::string base = "pointLights[" + std::to_string(i) + "]";
 
-        objectShader.setVec3((base + "position").c_str(), lightSources[i].position);
-        objectShader.setVec3((base + "ambient").c_str(), glm::vec3(0.05f));
-        objectShader.setVec3((base + "diffuse").c_str(), lightSources[i].color * glm::vec3(0.2f));
+        objectShader.setVec3((base + ".position").c_str(), lightSources[i].position);
+        objectShader.setVec3((base + ".ambient").c_str(), glm::vec3(0.05f));
+        objectShader.setVec3((base + ".diffuse").c_str(), lightSources[i].color * glm::vec3(0.2f));
     }
 
     glBindVertexArray(VAO);
@@ -151,8 +151,8 @@ void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, glm::mat4
     model = glm::translate(model, position);
     model = glm::scale(model, glm::vec3(radius));
 
-    objectShader.setMat4("model", model);   
-    objectShader.setMat4("view", view);   
+    objectShader.setMat4("model", model);
+    objectShader.setMat4("view", view);
     objectShader.setMat4("projection", projection);
 
     objectShader.setVec3("color", color);
