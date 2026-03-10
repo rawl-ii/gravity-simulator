@@ -8,65 +8,61 @@
 
 // definitions for static members declared in planet_manager.h
 std::unique_ptr<renderer> entityManager::entityRenderer = nullptr;
+std::vector<std::unique_ptr<entity>> entityManager::entities;
 
-std::vector<entity*> entityManager::objects;
-std::vector<std::unique_ptr<entity>> entityManager::stars;
-std::vector<std::unique_ptr<entity>> entityManager::planets;
-
-entity::entity(physicsArgs pArgs, glm::vec3 color):
+entity::entity(physicsArgs pArgs, glm::vec3 color, ENTITY_TYPE type):
+physics(pArgs.position, pArgs.velocity, pArgs.mass, pArgs.density),
 color(color),
-physics(pArgs.position, pArgs.velocity, pArgs.mass, pArgs.density) {}
+type(type) {}
 
 void entityManager::init() {    
     entityRenderer = std::make_unique<renderer>();
 }
 
 void entityManager::terminate() {
-    stars.clear();
-    planets.clear();
-    objects.clear();
+    entities.clear();
 
     renderer::terminate();
 }
 
 void entityManager::addStar(physicsArgs pArgs, glm::vec3 color) {
-    std::unique_ptr<entity> newStar(new entity(pArgs, color));
-
-    objects.push_back(newStar.get());
-    stars.push_back(std::move(newStar));
+    entities.emplace_back(new entity(pArgs, color, ENTITY_TYPE::STAR));
 }
 
 void entityManager::addPlanet(physicsArgs pArgs, glm::vec3 color) {
-    std::unique_ptr<entity> newPlanet(new entity(pArgs, color));
-
-    objects.push_back(newPlanet.get());
-    planets.push_back(std::move(newPlanet));
+    entities.emplace_back(new entity(pArgs, color, ENTITY_TYPE::PLANET));
 }
 
 void entityManager::drawStars(const glm::mat4 &view, const glm::mat4 &projection) {
-    for(auto& star : stars) {
-        entityRenderer->draw(star->getPosition(), star->getRadius(), star->color, view, projection);
+    for(auto& star : entities) {
+        if(star->type == ENTITY_TYPE::STAR) {
+            entityRenderer->draw(star->getPosition(), star->getRadius(), star->color, view, projection);
+        }
     }
 }
 
 void entityManager::drawPlanets(const glm::mat4 &view, const glm::mat4 &projection) {    
     std::vector<lightData> shaderData;
-    for(auto& star : stars) {
-        shaderData.push_back({star->getPosition(), star->color}); 
+    for(auto& star : entities) {
+        if(star->type == ENTITY_TYPE::STAR) {
+            shaderData.push_back({star->getPosition(), star->color});
+        }
     }
 
-    for(auto& planet : planets) {
-        entityRenderer->draw(planet->getPosition(), planet->getRadius(), planet->color, shaderData, view, projection);
+    for(auto& planet : entities) {
+        if(planet->type == ENTITY_TYPE::PLANET) {
+            entityRenderer->draw(planet->getPosition(), planet->getRadius(), planet->color, shaderData, view, projection);
+        }
     }
 }
 
 void entityManager::updatePhysics(float deltaTime) {
-    if(objects.size() < 2) { return; }
+    if(entities.size() < 2) { return; }
 
-    for(int i = 0; i < objects.size(); i++) {
-        for(int j = i + 1; j < objects.size(); j++) {
-            physicsObject &obj1 = objects[i]->physics;
-            physicsObject &obj2 = objects[j]->physics;
+    for(int i = 0; i < entities.size(); i++) {
+        for(int j = i + 1; j < entities.size(); j++) {
+            physicsObject &obj1 = entities[i]->physics;
+            physicsObject &obj2 = entities[j]->physics;
 
             glm::vec3 force = physicsObject::calculateGravity(obj1, obj2);
 
@@ -75,8 +71,8 @@ void entityManager::updatePhysics(float deltaTime) {
         }
     }
 
-    for(auto& object : objects) {
-        object->physics.applyVelocity(deltaTime);
+    for(auto& entity : entities) {
+        entity->physics.applyVelocity(deltaTime);
     }
 }
 

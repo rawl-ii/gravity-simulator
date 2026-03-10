@@ -27,11 +27,8 @@ public:
 
     static void updatePhysics(float deltaTime);
 private:
-    static std::vector<entity*> objects;
     static std::unique_ptr<renderer> entityRenderer;
-
-    static std::vector<std::unique_ptr<entity>> stars;
-    static std::vector<std::unique_ptr<entity>> planets;
+    static std::vector<std::unique_ptr<entity>> entities;
 };
 
 class entity {
@@ -43,9 +40,10 @@ public:
 
     glm::vec3 getPosition();
 private:
-    entity(physicsArgs pArgs, glm::vec3 color);
+    entity(physicsArgs pArgs, glm::vec3 color, ENTITY_TYPE type);
 
     physicsObject physics;
 
     const glm::vec3 color;
+    ENTITY_TYPE type;
 };
