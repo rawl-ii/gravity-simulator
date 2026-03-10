@@ -7,8 +7,7 @@
 #include <memory>
 
 // definitions for static members declared in planet_manager.h
-std::unique_ptr<renderer> entityManager::starRenderer = nullptr;
-std::unique_ptr<renderer> entityManager::planetRenderer = nullptr;
+std::unique_ptr<renderer> entityManager::entityRenderer = nullptr;
 
 std::vector<entity*> entityManager::objects;
 std::vector<std::unique_ptr<entity>> entityManager::stars;
@@ -19,8 +18,7 @@ color(color),
 physics(pArgs.position, pArgs.velocity, pArgs.mass, pArgs.density) {}
 
 void entityManager::init() {    
-    starRenderer = std::make_unique<renderer>();
-    planetRenderer = std::make_unique<renderer>();
+    entityRenderer = std::make_unique<renderer>();
 }
 
 void entityManager::terminate() {
@@ -47,7 +45,7 @@ void entityManager::addPlanet(physicsArgs pArgs, glm::vec3 color) {
 
 void entityManager::drawStars(const glm::mat4 &view, const glm::mat4 &projection) {
     for(auto& star : stars) {
-        starRenderer->draw(star->getPosition(), star->getRadius(), star->color, view, projection);
+        entityRenderer->draw(star->getPosition(), star->getRadius(), star->color, view, projection);
     }
 }
 
@@ -58,7 +56,7 @@ void entityManager::drawPlanets(const glm::mat4 &view, const glm::mat4 &projecti
     }
 
     for(auto& planet : planets) {
-        planetRenderer->draw(planet->getPosition(), planet->getRadius(), planet->color, shaderData, view, projection);
+        entityRenderer->draw(planet->getPosition(), planet->getRadius(), planet->color, shaderData, view, projection);
     }
 }
 

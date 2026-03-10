@@ -28,8 +28,7 @@ public:
     static void updatePhysics(float deltaTime);
 private:
     static std::vector<entity*> objects;
-    static std::unique_ptr<renderer> starRenderer;
-    static std::unique_ptr<renderer> planetRenderer;
+    static std::unique_ptr<renderer> entityRenderer;
 
     static std::vector<std::unique_ptr<entity>> stars;
     static std::vector<std::unique_ptr<entity>> planets;
