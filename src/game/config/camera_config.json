@@ -1,0 +1,9 @@
+{
+    "INTIAL_POSITION": [0.0, 0.0, 0.0],
+
+    "NEAR_PLANE": 0.1,
+    "FAR_PLANE": 1000.0,
+
+    "FOV": 55.0,
+    "SPEED": 75.0
+}

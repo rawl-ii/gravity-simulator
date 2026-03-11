@@ -1,0 +1,6 @@
+{
+    "GRAVITY": 100,
+
+    "MIN_DISTANCE": 0.000001,
+    "MIN_MASS": 0.01
+}
