@@ -1,10 +1,5 @@
 #include "game/entity_manager.h"
-#include "engine/renderer.h"
-#include "engine/physics.h"
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <vector>
-#include <memory>
 
 // definitions for static members declared in planet_manager.h
 std::unique_ptr<renderer> entityManager::entityRenderer = nullptr;

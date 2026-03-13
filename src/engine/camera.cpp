@@ -1,7 +1,4 @@
 #include "engine/camera.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 glm::vec3 camera::position = glm::vec3(0.0f);

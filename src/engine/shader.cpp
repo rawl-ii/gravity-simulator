@@ -1,6 +1,4 @@
 #include "engine/shader.h"
-#include <glad/glad.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <string>

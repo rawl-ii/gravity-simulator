@@ -1,15 +1,9 @@
 #include "engine/renderer.h"
-#include "engine/shader.h"
-#include <glad/glad.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <iostream>
 #include <filesystem>
-#include <vector>
 #include <cmath>
 #include <numbers>
-#include <memory>
-#include <map>
+#include <iostream>
 
 std::map<ENTITY_TYPE, std::unique_ptr<shader>> renderer::shaderLibrary;
 
