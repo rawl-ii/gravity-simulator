@@ -12,6 +12,10 @@ glm::vec3 camera::right = glm::normalize(glm::cross(front, up));
 
 float camera::speed = 5.0f;
 float camera::sensitivity = 0.05f;
+float camera::fov = 55.0f;
+
+float camera::nearPlane = 0.1f;
+float camera::farPlane = 100.0f;
 
 float camera::pitch = 0.0f;
 float camera::yaw = 90.0f;
@@ -105,8 +109,8 @@ void camera::processKeyboardInput(GLFWwindow* window, float deltaTime) {
 glm::mat4 camera::getViewMatrix() {
     return glm::lookAt(position, position + front, up); 
 }
-glm::mat4 camera::getProjectionMatrix(float fovy, float windowWidth, float windowHeight, float near, float far) {
-    return glm::perspective(glm::radians(55.0f), (windowWidth / windowHeight), near, far);
+glm::mat4 camera::getProjectionMatrix(float windowWidth, float windowHeight) {
+    return glm::perspective(glm::radians(fov), (windowWidth / windowHeight), nearPlane, farPlane);
 }
 
 glm::vec3 camera::getPosition() { return position; }

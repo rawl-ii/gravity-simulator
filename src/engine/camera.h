@@ -7,9 +7,13 @@ class camera {
 public:
     static float speed;
     static float sensitivity;
+    static float fov;
+
+    static float nearPlane;
+    static float farPlane;
 
     static glm::mat4 getViewMatrix();
-    static glm::mat4 getProjectionMatrix(float fovy, float windowWidth, float windowHeight, float near, float far);
+    static glm::mat4 getProjectionMatrix(float windowWidth, float windowHeight);
 
     static glm::vec3 getPosition();
     static void setInitialPosition(glm::vec3 initialPosition);
