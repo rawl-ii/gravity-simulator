@@ -5,7 +5,6 @@
 class win {
 public:
     win(int width, int height, const char* title);
-    void open();
 
     GLFWwindow* getWindow();
 

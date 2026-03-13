@@ -1,6 +1,4 @@
 #include "engine/window.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 
 void win::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -23,9 +21,7 @@ win::win(int width, int height, const char* title) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-}
 
-void win::open() {
     if(window == nullptr) {
         glfwTerminate();
         throw std::runtime_error("Could not create GLFW window");
