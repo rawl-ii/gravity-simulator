@@ -1,6 +1,8 @@
 {
-    "WINDOW_WIDTH": 800,
-    "WINDOW_HEIGHT": 600,
+    "window_width": 800,
+    "window_height": 600,
 
-    "TITLE": "Gravity Simulator"
+    "title": "Gravity Simulator",
+
+    "background_color": [0, 0, 0, 1.0]
 }

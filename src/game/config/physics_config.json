@@ -1,6 +1,8 @@
 {
-    "GRAVITY": 100,
+    "gravity": 100,
 
-    "MIN_DISTANCE": 0.000001,
-    "MIN_MASS": 0.01
+    "min_distance": 0.000001,
+    
+    "min_mass": 0.01,
+    "min_density": 0.01
 }
