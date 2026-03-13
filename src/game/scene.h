@@ -7,6 +7,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <memory>
+#include <vector>
 #include <iostream>
 
 void setPhysicsConstants(std::string& jsonPath);
@@ -14,13 +16,9 @@ void createScene(std::string& jsonPath);
 
 class scene {
 public:
-    static win window;
+    static std::unique_ptr<win> window;
 
     static void init();
     static void run();
     static void terminate();
-private:
-    static jsonFile physicsConfig;
-    static jsonFile windowConfig;
-    static jsonFile cameraConfig;
 };
