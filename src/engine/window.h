@@ -5,6 +5,8 @@
 class win {
 public:
     win(int width, int height, const char* title);
+    void open();
+
     GLFWwindow* getWindow();
 
     int getWidth();
@@ -18,6 +20,6 @@ public:
 private:
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
-    GLFWwindow *currentWindow;
+    GLFWwindow *window;
     unsigned int width, height;
 };
