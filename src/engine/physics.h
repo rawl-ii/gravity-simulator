@@ -1,10 +1,17 @@
 #pragma once
 #include <glm/glm.hpp>
 
-class physicsObject {
-public:
+struct physicsConstants {
     static float GRAVITY;
 
+    static float MIN_DISTANCE;
+    
+    static float MIN_MASS;
+    static float MIN_DENSITY;
+};
+
+class physicsObject {
+public:
     physicsObject(glm::vec3 position, glm::vec3 velocity, float mass, float density);
 
     static glm::vec3 calculateGravity(const physicsObject& obj1, const physicsObject& obj2);

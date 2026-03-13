@@ -1,13 +1,16 @@
 #include "engine/physics.h"
-#include <glm/glm.hpp>
 #include <cmath>
 
-float physicsObject::GRAVITY = 100.0f; 
+float physicsConstants::GRAVITY;
+float physicsConstants::MIN_DISTANCE;
+float physicsConstants::MIN_MASS;
+float physicsConstants::MIN_DENSITY;
 
 physicsObject::physicsObject(glm::vec3 position, glm::vec3 velocity, float mass, float density):
 position(position), velocity(velocity), acceleration(0.0f), mass(mass) {
 
-    density = std::max(density, 0.00001f);
+    mass = std::max(mass, physicsConstants::MIN_MASS);
+    density = std::max(density, physicsConstants::MIN_DENSITY);
 
     float volume = mass / density;
     this->radius = std::cbrt((3.0f * volume) / (4.0f * std::numbers::pi_v<float>));
@@ -17,9 +20,9 @@ glm::vec3 physicsObject::calculateGravity(const physicsObject& obj1, const physi
     glm::vec3 direction = obj1.position - obj2.position;
     float distance = glm::length(direction);
     
-    if(distance <= 0.01f) { return glm::vec3(0.0f); }
+    if(distance < physicsConstants::MIN_DISTANCE) { return glm::vec3(0.0f); }
     
-    float forceMagnitude = (GRAVITY * obj1.mass * obj2.mass) / (distance * distance);
+    float forceMagnitude = (physicsConstants::GRAVITY * obj1.mass * obj2.mass) / (distance * distance);
     glm::vec3 force = glm::normalize(direction) * forceMagnitude;
     
     return force;
