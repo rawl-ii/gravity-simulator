@@ -47,4 +47,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 set(CONFIG_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/game/config")
 set(CONFIG_DEST "${CMAKE_CURRENT_BINARY_DIR}/game/config")
 
-file(COPY ${CONFIG_SRC} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/game")
+file(MAKE_DIRECTORY ${CONFIG_DEST})
+
+add_custom_target(config_files ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/game/config
+        ${CMAKE_CURRENT_BINARY_DIR}/game/config
+    COMMENT "Updating JSON configuration files"
+)
