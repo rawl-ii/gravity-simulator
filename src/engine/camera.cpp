@@ -79,7 +79,10 @@ void camera::processCursorCallback(GLFWwindow* window) {
 }
 
 void camera::processKeyboardInput(GLFWwindow* window, float deltaTime) {
-    float cameraVelocity = speed * deltaTime;
+    float cameraVelocity;
+
+    glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) ? cameraVelocity = speed / 4 : cameraVelocity = speed; 
+    cameraVelocity *= deltaTime;
 
     if(glfwGetKey(window, GLFW_KEY_W)) {
         position += front * cameraVelocity;
