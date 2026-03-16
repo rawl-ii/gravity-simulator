@@ -1,6 +1,5 @@
 #include "game/scene.h"
 #include "engine/camera.h"
-#include "engine/physics.h"
 #include "engine/json_reader.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -53,16 +52,22 @@ float scene::getDeltaTime() {
 
 void scene::init(const std::string& scenePath) {
     jsonFile cameraConfig("game/config/camera_config.json");
+    jsonFile graphicConfig("game/config/render_config.json");
     jsonFile physicsConfig("game/config/physics_config.json");
     jsonFile windowConfig("game/config/window_config.json");
 
     std::vector<float> cameraPos = cameraConfig.get<std::vector<float>>("initial_position");
     camera::setInitialPosition(glm::vec3(cameraPos[0], cameraPos[1], cameraPos[2]));
-    
+
     camera::speed = cameraConfig.get<float>("speed");
     camera::fov = cameraConfig.get<float>("fov");
     camera::nearPlane = cameraConfig.get<float>("near_plane");
     camera::farPlane = cameraConfig.get<float>("far_plane");
+
+    std::vector<float> ambientValue = graphicConfig.get<std::vector<float>>("ambient");
+    renderer::ambient = glm::vec3(ambientValue[0], ambientValue[1], ambientValue[2]);
+    std::vector<float> diffuseValue = graphicConfig.get<std::vector<float>>("diffuse");
+    renderer::diffuse = glm::vec3(diffuseValue[0], diffuseValue[1], diffuseValue[2]);
 
     physicsConstants::GRAVITY = physicsConfig.get<float>("gravity");
     physicsConstants::MIN_DISTANCE = physicsConfig.get<float>("min_distance");
@@ -71,7 +76,7 @@ void scene::init(const std::string& scenePath) {
     window = std::make_unique<win>(
         windowConfig.get<int>("window_width"),
         windowConfig.get<int>("window_height"), 
-        (windowConfig.get<std::string>("title")).c_str()
+        windowConfig.get<std::string>("title")
     );
     windowColor = windowConfig.get<std::vector<float>>("background_color");
 
@@ -80,12 +85,12 @@ void scene::init(const std::string& scenePath) {
 }
 
 void scene::run() {    
-    glClearColor(windowColor[0], windowColor[1], windowColor[2], windowColor[3]);
     glEnable(GL_DEPTH_TEST);
 
     camera::processCursorCallback(window->getWindow());
 
     while(!window->windowShouldClose()) {
+        glClearColor(windowColor[0], windowColor[1], windowColor[2], windowColor[3]);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         float deltaTime = getDeltaTime();
 
@@ -95,7 +100,7 @@ void scene::run() {
         camera::processKeyboardInput(window->getWindow(), deltaTime);
 
         entityManager::updatePhysics(deltaTime);
-        entityManager::drawStars(view, projection);
+        entityManager::drawStars(view, projection, camera::getPosition());
         entityManager::drawPlanets(view, projection);
 
         window->swapBuffers();

@@ -22,7 +22,10 @@ public:
     static void terminate();
 
     void draw(glm::vec3 position, float radius, glm::vec3 color, std::vector<lightData> lightSources, glm::mat4 view, glm::mat4 projection);
-    void draw(glm::vec3 position, float radius, glm::vec3 color, glm::mat4 view, glm::mat4 projection);
+    void draw(glm::vec3 position, float radius, glm::vec3 color, glm::vec3 viewerPosition, glm::mat4 view, glm::mat4 projection);
+
+    static glm::vec3 ambient;
+    static glm::vec3 diffuse;
 private:
     static bool isInitialized;
 

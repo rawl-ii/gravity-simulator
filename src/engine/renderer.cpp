@@ -5,6 +5,9 @@
 #include <numbers>
 #include <iostream>
 
+glm::vec3 renderer::ambient = glm::vec3(0.1f);
+glm::vec3 renderer::diffuse = glm::vec3(0.5f);
+
 std::map<ENTITY_TYPE, std::unique_ptr<shader>> renderer::shaderLibrary;
 
 GLuint renderer::VAO = 0;
@@ -124,11 +127,11 @@ void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, std::vect
 
     objectShader.setVec3("color", color);
     for(int i = 0; i < lightSources.size(); i++) {
-        std::string base = "pointLights[" + std::to_string(i) + "]";
+        std::string base = "pointLights[" + std::to_string(i) + "].";
 
-        objectShader.setVec3((base + ".position").c_str(), lightSources[i].position);
-        objectShader.setVec3((base + ".ambient").c_str(), glm::vec3(0.05f));
-        objectShader.setVec3((base + ".diffuse").c_str(), lightSources[i].color * glm::vec3(0.2f));
+        objectShader.setVec3((base + "position").c_str(), lightSources[i].position);
+        objectShader.setVec3((base + "ambient").c_str(), ambient);
+        objectShader.setVec3((base + "diffuse").c_str(), lightSources[i].color * diffuse);
     }
 
     glBindVertexArray(VAO);
@@ -137,7 +140,7 @@ void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, std::vect
     glBindVertexArray(0);
 }
 
-void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, glm::mat4 view, glm::mat4 projection) {
+void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, glm::vec3 viewerPosition, glm::mat4 view, glm::mat4 projection) {
     shader &objectShader = *shaderLibrary[ENTITY_TYPE::STAR];
     objectShader.use();
 
@@ -150,6 +153,7 @@ void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, glm::mat4
     objectShader.setMat4("projection", projection);
 
     objectShader.setVec3("color", color);
+    objectShader.setVec3("viewPos", viewerPosition);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
