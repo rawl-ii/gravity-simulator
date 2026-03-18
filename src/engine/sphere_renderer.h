@@ -8,7 +8,7 @@
 
 enum class ENTITY_TYPE {
     PLANET,
-    STAR  
+    STAR
 };
 
 struct lightData {
@@ -16,9 +16,9 @@ struct lightData {
     glm::vec3 color;
 };
 
-class renderer {
+class SphereRenderer {
 public:
-    renderer();
+    SphereRenderer();
     static void terminate();
 
     void draw(glm::vec3 position, float radius, glm::vec3 color, std::vector<lightData> lightSources, glm::mat4 view, glm::mat4 projection);
@@ -36,9 +36,10 @@ private:
     static constexpr GLuint stacks = 64;
     static constexpr GLuint sectors = 64;
 
-    static std::map<ENTITY_TYPE, std::unique_ptr<shader>> shaderLibrary;
+    static std::map<ENTITY_TYPE, std::unique_ptr<Shader>> shaderLibrary;
 
     static void initGeometry();
+
     static void initShaders();
 
     static void createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> &indices);

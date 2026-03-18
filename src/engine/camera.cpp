@@ -1,29 +1,30 @@
 #include "engine/camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-glm::vec3 camera::position = glm::vec3(0.0f);
+glm::vec3 Camera::position = glm::vec3(0.0f);
 
-glm::vec3 camera::front = glm::vec3(0.0f, 0.0f, 1.0f);
-glm::vec3 camera::up = glm::vec3(0.0f, 1.0f, 0.0f);
-glm::vec3 camera::right = glm::normalize(glm::cross(front, up));
+glm::vec3 Camera::front = glm::vec3(0.0f, 0.0f, 1.0f);
+glm::vec3 Camera::up = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 Camera::right = glm::normalize(glm::cross(front, up));
 
-float camera::speed = 5.0f;
-float camera::sensitivity = 0.05f;
-float camera::fov = 55.0f;
+float Camera::speed = 5.0f;
+float Camera::scrollSpeed = 25.0f;
+float Camera::sensitivity = 0.05f;
+float Camera::fov = 55.0f;
 
-float camera::nearPlane = 0.1f;
-float camera::farPlane = 100.0f;
+float Camera::nearPlane = 0.1f;
+float Camera::farPlane = 100.0f;
 
-float camera::pitch = 0.0f;
-float camera::yaw = 90.0f;
+float Camera::pitch = 0.0f;
+float Camera::yaw = 90.0f;
 
-bool camera::cursorEnabled = false;
+bool Camera::cursorEnabled = false;
 
-void camera::setInitialPosition(glm::vec3 initialPosition) {
+void Camera::setInitialPosition(glm::vec3 initialPosition) {
     position = initialPosition;
 }
 
-void camera::updateVectors() {
+void Camera::updateVectors() {
     glm::vec3 newFront;
 
     newFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -35,7 +36,35 @@ void camera::updateVectors() {
     up = glm::normalize(glm::cross(right, front));
 }
 
-void camera::processCursorInput(GLFWwindow* window, double xOffset, double yOffset) {
+void Camera::processKeyboardInput(GLFWwindow* window, float deltaTime) {
+    float CameraVelocity;
+
+    glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) ? CameraVelocity = speed / 4 : CameraVelocity = speed; 
+    CameraVelocity *= deltaTime;
+
+    if(glfwGetKey(window, GLFW_KEY_W)) {
+        position += front * CameraVelocity;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_S)) {
+        position -= front * CameraVelocity;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_A)) {
+        position -= right * CameraVelocity;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_D)) {
+        position += right * CameraVelocity;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_Q)) {
+        position -= up * CameraVelocity;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_E)) {
+        position += up * CameraVelocity;
+    }
+}
+
+void Camera::processCursorInput(GLFWwindow* window, double xOffset, double yOffset) {
     static bool firstMouse = true;
     static float lastX, lastY;
     
@@ -67,7 +96,7 @@ void camera::processCursorInput(GLFWwindow* window, double xOffset, double yOffs
     updateVectors();
 }
 
-void camera::processCursorCallback(GLFWwindow* window) {
+void Camera::processCursorCallback(GLFWwindow* window) {
     if(cursorEnabled) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwSetCursorPosCallback(window, nullptr);
@@ -78,42 +107,22 @@ void camera::processCursorCallback(GLFWwindow* window) {
     }
 }
 
-void camera::processKeyboardInput(GLFWwindow* window, float deltaTime) {
-    float cameraVelocity;
-
-    glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) ? cameraVelocity = speed / 4 : cameraVelocity = speed; 
-    cameraVelocity *= deltaTime;
-
-    if(glfwGetKey(window, GLFW_KEY_W)) {
-        position += front * cameraVelocity;
-    }
-    else if(glfwGetKey(window, GLFW_KEY_S)) {
-        position -= front * cameraVelocity;
-    }
-
-    if(glfwGetKey(window, GLFW_KEY_A)) {
-        position -= right * cameraVelocity;
-    }
-    else if(glfwGetKey(window, GLFW_KEY_D)) {
-        position += right * cameraVelocity;
-    }
-
-    if(glfwGetKey(window, GLFW_KEY_Q)) {
-        position -= up * cameraVelocity;
-    }
-    else if(glfwGetKey(window, GLFW_KEY_E)) {
-        position += up * cameraVelocity;
-    }
+void Camera::processScrollrInput(GLFWwindow* window, double, double yOffset) {
+    position += front * scrollSpeed * (float)yOffset;
 }
 
-glm::mat4 camera::getViewMatrix() {
+void Camera::processScrollCallback(GLFWwindow* window) {
+    glfwSetScrollCallback(window, processScrollrInput);
+}
+
+glm::mat4 Camera::getViewMatrix() {
     return glm::lookAt(position, position + front, up); 
 }
-glm::mat4 camera::getProjectionMatrix(float windowWidth, float windowHeight) {
+glm::mat4 Camera::getProjectionMatrix(float windowWidth, float windowHeight) {
     return glm::perspective(glm::radians(fov), (windowWidth / windowHeight), nearPlane, farPlane);
 }
 
-glm::vec3 camera::getPosition() { return position; }
+glm::vec3 Camera::getPosition() { return position; }
 
-void camera::enableCursor() { cursorEnabled = true; }
-void camera::disableCursor() { cursorEnabled = false; }
+void Camera::enableCursor() { cursorEnabled = true; }
+void Camera::disableCursor() { cursorEnabled = false; }

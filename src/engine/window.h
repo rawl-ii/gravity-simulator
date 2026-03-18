@@ -1,10 +1,11 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 class win {
 public:
-    win(int width, int height, const char* title);
+    win(int width, int height, const std::string &title);
 
     GLFWwindow* getWindow();
 

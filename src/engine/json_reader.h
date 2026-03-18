@@ -5,9 +5,9 @@
 #include <iostream>
 using json = nlohmann::json;
 
-class jsonFile {
+class JsonFile {
 public:
-    jsonFile(const std::string& path);
+    JsonFile(const std::string& path);
     const json dataFile;
 
     template <typename T>

@@ -3,9 +3,10 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-class camera {
+class Camera {
 public:
     static float speed;
+    static float scrollSpeed;
     static float sensitivity;
     static float fov;
 
@@ -23,6 +24,7 @@ public:
 
     static void processKeyboardInput(GLFWwindow* window, float deltaTime);
     static void processCursorCallback(GLFWwindow* window);
+    static void processScrollCallback(GLFWwindow* window);
 private:
     static glm::vec3 position;
 
@@ -35,5 +37,7 @@ private:
     static bool cursorEnabled;
 
     static void processCursorInput(GLFWwindow* window, double xOffset, double yOffset);
+    static void processScrollrInput(GLFWwindow* window, double, double yOffset);
+    
     static void updateVectors();
 };

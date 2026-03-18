@@ -6,7 +6,7 @@ float physicsConstants::MIN_DISTANCE;
 float physicsConstants::MIN_MASS;
 float physicsConstants::MIN_DENSITY;
 
-physicsObject::physicsObject(glm::vec3 position, glm::vec3 velocity, float mass, float density):
+Physics::Physics(glm::vec3 position, glm::vec3 velocity, float mass, float density):
 position(position), velocity(velocity), acceleration(0.0f), mass(mass) {
 
     mass = std::max(mass, physicsConstants::MIN_MASS);
@@ -16,7 +16,7 @@ position(position), velocity(velocity), acceleration(0.0f), mass(mass) {
     this->radius = std::cbrt((3.0f * volume) / (4.0f * std::numbers::pi_v<float>));
 }
 
-glm::vec3 physicsObject::calculateGravity(const physicsObject& obj1, const physicsObject& obj2) {
+glm::vec3 Physics::calculateGravity(const Physics& obj1, const Physics& obj2) {
     glm::vec3 direction = obj1.position - obj2.position;
     float distance = glm::length(direction);
     
@@ -29,18 +29,18 @@ glm::vec3 physicsObject::calculateGravity(const physicsObject& obj1, const physi
 }
 
 
-void physicsObject::applyForce(const glm::vec3 &force) {
+void Physics::applyForce(const glm::vec3 &force) {
     this->acceleration += force / this->mass;
 }
 
-void physicsObject::applyVelocity(float deltaTime) {
+void Physics::applyVelocity(float deltaTime) {
     this->velocity += this->acceleration * deltaTime;
     this->position += this->velocity * deltaTime;
 
     this->acceleration = glm::vec3(0.0f);
 }
 
-float physicsObject::getRadius() { return this->radius; }
-float physicsObject::getMass() { return this->mass; }
+float Physics::getRadius() { return this->radius; }
+float Physics::getMass() { return this->mass; }
 
-glm::vec3 physicsObject::getPosition() { return this->position; }
+glm::vec3 Physics::getPosition() { return this->position; }

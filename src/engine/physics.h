@@ -10,11 +10,11 @@ struct physicsConstants {
     static float MIN_DENSITY;
 };
 
-class physicsObject {
+class Physics {
 public:
-    physicsObject(glm::vec3 position, glm::vec3 velocity, float mass, float density);
+    Physics(glm::vec3 position, glm::vec3 velocity, float mass, float density);
 
-    static glm::vec3 calculateGravity(const physicsObject& obj1, const physicsObject& obj2);
+    static glm::vec3 calculateGravity(const Physics& obj1, const Physics& obj2);
     void applyForce(const glm::vec3 &force);
     void applyVelocity(float deltaTime);
 

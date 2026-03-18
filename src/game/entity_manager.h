@@ -1,5 +1,5 @@
 #pragma once
-#include "engine/renderer.h"
+#include "engine/sphere_renderer.h"
 #include "engine/physics.h"
 #include <glm/glm.hpp>
 #include <vector>
@@ -13,8 +13,7 @@ struct physicsArgs {
     float density;
 };
 
-class entity;
-class entityManager {
+class EntityManager {
 public:
     static void init();
     static void terminate();
@@ -22,28 +21,30 @@ public:
     static void addStar(physicsArgs pArgs, glm::vec3 color);
     static void addPlanet(physicsArgs pArgs, glm::vec3 color);
 
-    static void drawStars(const glm::mat4 &view, const glm::mat4 &projection);
+    static void drawStars(const glm::vec3 &viewerPosition, const glm::mat4 &view, const glm::mat4 &projection);
     static void drawPlanets(const glm::mat4 &view, const glm::mat4 &projection);
 
     static void updatePhysics(float deltaTime);
+
+    static std::vector<float> getMasses();
+    static std::vector<float> getRadiuses();
+    static std::vector<glm::vec3> getPositions();
 private:
-    static std::unique_ptr<renderer> entityRenderer;
-    static std::vector<std::unique_ptr<entity>> entities;
-};
+    class Entity {
+        friend class EntityManager;  
 
-class entity {
-public:
-    friend class entityManager;    
+        float getMass();
+        float getRadius();
 
-    float getMass();
-    float getRadius();
+        glm::vec3 getPosition();
+        Entity(physicsArgs pArgs, glm::vec3 color, ENTITY_TYPE type);
 
-    glm::vec3 getPosition();
-private:
-    entity(physicsArgs pArgs, glm::vec3 color, ENTITY_TYPE type);
+        Physics physics;
 
-    physicsObject physics;
+        const glm::vec3 color;
+        ENTITY_TYPE type;
+    };
 
-    const glm::vec3 color;
-    ENTITY_TYPE type;
+    static std::unique_ptr<SphereRenderer> entityRenderer;
+    static std::vector<std::unique_ptr<Entity>> entities;
 };

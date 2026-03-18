@@ -1,11 +1,10 @@
 #pragma once
-#include "game/entity_manager.h"
 #include "engine/window.h"
 #include <memory>
 #include <vector>
 #include <iostream>
 
-class scene {
+class Scene {
 public:
     static std::unique_ptr<win> window;
 
@@ -13,9 +12,13 @@ public:
     static void run();
     static void terminate();
 private:
-    static void createScene(const std::string& jsonPath);
-    
+    static void createEntities(const std::string& jsonPath);
+    static void createGrid(int size, int step, size_t objectCount);
+
     static float getDeltaTime();
 
     static std::vector<float> windowColor;
+
+    static int gridSize;
+    static float gridStep;
 };

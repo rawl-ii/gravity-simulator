@@ -1,5 +1,4 @@
 #include "engine/window.h"
-#include <iostream>
 
 void win::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     win* self = static_cast<win*>(glfwGetWindowUserPointer(window));
@@ -10,7 +9,7 @@ void win::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-win::win(int width, int height, const char* title) {
+win::win(int width, int height, const std::string &title) {
     this->width = width;
     this->height = height;
 
@@ -20,7 +19,7 @@ win::win(int width, int height, const char* title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
     if(window == nullptr) {
         glfwTerminate();

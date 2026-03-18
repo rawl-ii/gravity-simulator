@@ -2,12 +2,12 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-class shader {
+class Shader {
 public:
     GLuint ID;
 
-    shader(const char* vertexPath, const char* fragmentPath);
-    ~shader();
+    Shader(const char* vertexPath, const char* fragmentPath);
+    ~Shader();
 
     void use();
 

@@ -1,22 +1,22 @@
-#include "engine/renderer.h"
+#include "engine/sphere_renderer.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <filesystem>
 #include <cmath>
 #include <numbers>
 #include <iostream>
 
-glm::vec3 renderer::ambient = glm::vec3(0.1f);
-glm::vec3 renderer::diffuse = glm::vec3(0.5f);
+glm::vec3 SphereRenderer::ambient;
+glm::vec3 SphereRenderer::diffuse;
 
-std::map<ENTITY_TYPE, std::unique_ptr<shader>> renderer::shaderLibrary;
+std::map<ENTITY_TYPE, std::unique_ptr<Shader>> SphereRenderer::shaderLibrary;
 
-GLuint renderer::VAO = 0;
-GLuint renderer::VBO = 0;
-GLuint renderer::EBO = 0;
-GLsizei renderer::indexCount = 0;
-bool renderer::isInitialized = false;
+GLuint SphereRenderer::VAO;
+GLuint SphereRenderer::VBO;
+GLuint SphereRenderer::EBO;
+GLsizei SphereRenderer::indexCount;
+bool SphereRenderer::isInitialized = false;
 
-renderer::renderer() {
+SphereRenderer::SphereRenderer() {
     if(!isInitialized) {
         initShaders();
         initGeometry();
@@ -25,7 +25,7 @@ renderer::renderer() {
     }
 }
 
-void renderer::terminate() {
+void SphereRenderer::terminate() {
     glDeleteVertexArrays(1, &VAO);
 
     glDeleteBuffers(1, &VBO);
@@ -35,7 +35,7 @@ void renderer::terminate() {
     isInitialized = false;
 }
 
-void renderer::initGeometry() {
+void SphereRenderer::initGeometry() {
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
 
@@ -64,19 +64,19 @@ void renderer::initGeometry() {
     indexCount = static_cast<GLsizei>(indices.size());
 }
 
-void renderer::initShaders() {
-    const std::string base = std::filesystem::current_path().string();
+void SphereRenderer::initShaders() {
+    const std::string basePath = std::filesystem::current_path().string();
 
-    shaderLibrary[ENTITY_TYPE::PLANET] = std::make_unique<shader>
-    ((base + "/../src/game/shaders/planet.vert").c_str(),
-    (base + "/../src/game/shaders/planet.frag").c_str());
+    shaderLibrary[ENTITY_TYPE::PLANET] = std::make_unique<Shader>
+    ((basePath + "/../src/game/shaders/planet.vert").c_str(),
+    (basePath + "/../src/game/shaders/planet.frag").c_str());
 
-    shaderLibrary[ENTITY_TYPE::STAR] = std::make_unique<shader>
-    ((base + "/../src/game/shaders/star.vert").c_str(),
-    (base + "/../src/game/shaders/star.frag").c_str());
+    shaderLibrary[ENTITY_TYPE::STAR] = std::make_unique<Shader>
+    ((basePath + "/../src/game/shaders/star.vert").c_str(),
+    (basePath + "/../src/game/shaders/star.frag").c_str());
 }
 
-void renderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> &indices) {
+void SphereRenderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> &indices) {
     for(int i = 0; i <= stacks; i++) {
         float phi = std::numbers::pi_v<float> * i / stacks;
 
@@ -113,8 +113,8 @@ void renderer::createSphere(std::vector<GLfloat> &vertices, std::vector<GLuint> 
     }
 }
 
-void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, std::vector<lightData> lightSources, glm::mat4 view, glm::mat4 projection) {
-    shader &objectShader = *shaderLibrary[ENTITY_TYPE::PLANET];
+void SphereRenderer::draw(glm::vec3 position, float radius, glm::vec3 color, std::vector<lightData> lightSources, glm::mat4 view, glm::mat4 projection) {
+    Shader &objectShader = *shaderLibrary[ENTITY_TYPE::PLANET];
     objectShader.use();
 
     glm::mat4 model = glm::mat4(1.0f);
@@ -140,8 +140,8 @@ void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, std::vect
     glBindVertexArray(0);
 }
 
-void renderer::draw(glm::vec3 position, float radius, glm::vec3 color, glm::vec3 viewerPosition, glm::mat4 view, glm::mat4 projection) {
-    shader &objectShader = *shaderLibrary[ENTITY_TYPE::STAR];
+void SphereRenderer::draw(glm::vec3 position, float radius, glm::vec3 color, glm::vec3 viewerPosition, glm::mat4 view, glm::mat4 projection) {
+    Shader &objectShader = *shaderLibrary[ENTITY_TYPE::STAR];
     objectShader.use();
 
     glm::mat4 model = glm::mat4(1.0f);
