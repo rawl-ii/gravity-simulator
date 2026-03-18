@@ -16,7 +16,8 @@ set(SOURCE_FILES
     src/glad/glad.c
 
     src/engine/shader.cpp
-    src/engine/renderer.cpp
+    src/engine/sphere_renderer.cpp
+    src/engine/grid_renderer.cpp
     src/engine/physics.cpp
     src/engine/window.cpp
     src/engine/camera.cpp
