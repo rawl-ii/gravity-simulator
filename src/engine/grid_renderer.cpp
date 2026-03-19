@@ -2,21 +2,26 @@
 #include <filesystem>
 #include <iostream>
 
-GLuint GridRenderer::VAO;
-GLuint GridRenderer::VBO;
-GLuint GridRenderer::EBO;
-int GridRenderer::division;
-int GridRenderer::lines;
-float GridRenderer::step;
-size_t GridRenderer::objectCount;
-size_t GridRenderer::indexCount;
-std::unique_ptr<Shader> GridRenderer::shader = nullptr;
-bool GridRenderer::isInitialized = false;
+float gridConfig::SOFTENING;
+float gridConfig::INTESITY;
+float gridConfig::DECAY;
 
-void GridRenderer::init(int size, int stepSize, size_t numObjects) {
+GLuint Grid::VAO;
+GLuint Grid::VBO;
+GLuint Grid::EBO;
+
+int Grid::division;
+int Grid::lines;
+float Grid::step;
+
+size_t Grid::indexCount;
+
+std::unique_ptr<Shader> Grid::shader = nullptr;
+bool Grid::isInitialized = false;
+
+void Grid::init(int size, float stepSize) {
     if(isInitialized) { return; }
     
-    objectCount = numObjects;
     lines = size;
     division = size * 2;
     step = stepSize;
@@ -27,31 +32,29 @@ void GridRenderer::init(int size, int stepSize, size_t numObjects) {
         (basePath + "/../src/game/shaders/grid.frag").c_str()
     );
 
-    shader->use();
-    shader->setInt("objectCount", numObjects);
-
     createGrid();
     isInitialized = true;
 }
 
-void GridRenderer::terminate() {
+void Grid::terminate() {
     glDeleteVertexArrays(1, &VAO);
 
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 
+    shader.release();
     isInitialized = false;
 }
 
-void GridRenderer::createGrid() {        
+void Grid::createGrid() {  
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
 
     for(int i = 0; i <= division; i++) {
-        float z = (float)i - (float)lines;
+        float z = static_cast<float>(i) - static_cast<float>(lines);
 
         for(int j = 0; j <= division; j++) {
-            float x = (float)j - (float)lines;
+            float x = static_cast<float>(j) - static_cast<float>(lines);
 
             vertices.push_back(x * step);
             vertices.push_back(0.0f);
@@ -93,18 +96,26 @@ void GridRenderer::createGrid() {
     glBindVertexArray(0);
 };
 
-void GridRenderer::draw(objectsData objects, const glm::mat4 &view, const glm::mat4 &projection) {
+void Grid::draw(std::vector<objectsData> objects, const glm::mat4 &view, const glm::mat4 &projection) {
+    shader->use();
+
     glm::mat4 model = glm::mat4(1.0f);
     shader->setMat4("model", model);
 
     shader->setMat4("view", view);
     shader->setMat4("projection", projection);
 
-    for(int i = 0; i < objectCount; i++) {
+    shader->setInt("objectCount", objects.size());
+
+    shader->setFloat("softening", gridConfig::SOFTENING);
+    shader->setFloat("intensity", gridConfig::INTESITY);
+    shader->setFloat("decay", gridConfig::DECAY);
+
+    for(int i = 0; i < objects.size(); i++) {
         std::string base = "objects[" + std::to_string(i) + "].";
 
-        shader->setVec3((base + "position").c_str(), objects.position[i]);
-        shader->setFloat((base + "weigth").c_str(), objects.weight[i]);
+        shader->setVec3((base + "position").c_str(), objects[i].position);
+        shader->setFloat((base + "mass").c_str(), objects[i].weight);
     }
 
     glBindVertexArray(VAO);

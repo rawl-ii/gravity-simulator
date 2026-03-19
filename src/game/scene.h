@@ -13,7 +13,6 @@ public:
     static void terminate();
 private:
     static void createEntities(const std::string& jsonPath);
-    static void createGrid(int size, int step, size_t objectCount);
 
     static float getDeltaTime();
 

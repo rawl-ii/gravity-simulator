@@ -6,16 +6,22 @@
 #include <memory>
 
 struct objectsData {
-    std::vector<glm::vec3> position;
-    std::vector<float> weight;
+    glm::vec3 position;
+    float weight;
 };
 
-class GridRenderer {
+struct gridConfig {
+    static float SOFTENING;
+    static float INTESITY;
+    static float DECAY;
+};
+
+class Grid {
 public:
-    static void init(int size, int stepSize, size_t numObjects);
+    static void init(int size, float stepSize);
     static void terminate();
 
-    static void draw(objectsData objects, const glm::mat4 &view, const glm::mat4 &projection);
+    static void draw(std::vector<objectsData> objects, const glm::mat4 &view, const glm::mat4 &projection);
 
     static int division;
     static int lines;
@@ -26,7 +32,6 @@ private:
     static GLuint VAO, VBO, EBO;
     static std::unique_ptr<Shader> shader;
 
-    static size_t objectCount;
     static size_t indexCount;
 
     static void createGrid();

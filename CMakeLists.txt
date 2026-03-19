@@ -24,7 +24,6 @@ set(SOURCE_FILES
     src/engine/json_reader.cpp
 
     src/game/entity_manager.cpp
-    src/game/grid_manager.cpp
     src/game/scene.cpp
 )
 

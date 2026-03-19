@@ -1,12 +1,13 @@
 #include "game/scene.h"
 #include "game/entity_manager.h"
-#include <game/grid_manager.h>
+#include "engine/grid_renderer.h"
 #include "engine/camera.h"
 #include "engine/json_reader.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include <iostream>
 
 std::unique_ptr<win> Scene::window = nullptr;
 std::vector<float> Scene::windowColor;
@@ -53,24 +54,28 @@ float Scene::getDeltaTime() {
 }
 
 void Scene::init(const std::string& ScenePath) {
-    JsonFile CameraConfig("game/config/camera_config.json");
+    JsonFile cameraConfig("game/config/camera_config.json");
     JsonFile graphicConfig("game/config/render_config.json");
+    JsonFile gridConfig("game/config/grid_config.json");
     JsonFile physicsConfig("game/config/physics_config.json");
     JsonFile windowConfig("game/config/window_config.json");
 
-    std::vector<float> CameraPos = CameraConfig.get<std::vector<float>>("initial_position");
+    std::vector<float> CameraPos = cameraConfig.get<std::vector<float>>("initial_position");
     Camera::setInitialPosition(glm::vec3(CameraPos[0], CameraPos[1], CameraPos[2]));
-
-    Camera::speed = CameraConfig.get<float>("speed");
-    Camera::scrollSpeed = CameraConfig.get<float>("scroll_speed");
-    Camera::fov = CameraConfig.get<float>("fov");
-    Camera::nearPlane = CameraConfig.get<float>("near_plane");
-    Camera::farPlane = CameraConfig.get<float>("far_plane");
+    Camera::speed = cameraConfig.get<float>("speed");
+    Camera::scrollSpeed = cameraConfig.get<float>("scroll_speed");
+    Camera::fov = cameraConfig.get<float>("fov");
+    Camera::nearPlane = cameraConfig.get<float>("near_plane");
+    Camera::farPlane = cameraConfig.get<float>("far_plane");
 
     std::vector<float> ambientValue = graphicConfig.get<std::vector<float>>("ambient");
     SphereRenderer::ambient = glm::vec3(ambientValue[0], ambientValue[1], ambientValue[2]);
     std::vector<float> diffuseValue = graphicConfig.get<std::vector<float>>("diffuse");
     SphereRenderer::diffuse = glm::vec3(diffuseValue[0], diffuseValue[1], diffuseValue[2]);
+
+    gridConfig::SOFTENING = gridConfig.get<float>("softening");
+    gridConfig::INTESITY = gridConfig.get<float>("intesity");
+    gridConfig::DECAY = gridConfig.get<float>("decay");
 
     physicsConstants::GRAVITY = physicsConfig.get<float>("gravity");
     physicsConstants::MIN_DISTANCE = physicsConfig.get<float>("min_distance");
@@ -84,12 +89,15 @@ void Scene::init(const std::string& ScenePath) {
     windowColor = windowConfig.get<std::vector<float>>("background_color");
 
     EntityManager::init();
-    Grid::init(gridSize, gridStep, EntityManager::getMasses().size());
     createEntities(ScenePath);
+
+    Grid::init(gridConfig.get<int>("size"), gridConfig.get<float>("step"));
 }
 
 void Scene::run() {    
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Camera::processCursorCallback(window->getWindow());
     Camera::processScrollCallback(window->getWindow());
@@ -111,7 +119,12 @@ void Scene::run() {
 
         EntityManager::drawStars(Camera::getPosition(), view, projection);
         EntityManager::drawPlanets(view, projection);
-        Grid::draw(positions, masses, view, projection);
+
+        std::vector<objectsData> entities;
+        for(int i = 0; i < EntityManager::getEntitiesSize(); i++) {
+            entities.push_back({positions[i], masses[i]});
+        }
+        Grid::draw(entities, view, projection);
 
         window->swapBuffers();
         win::pollEvents();
