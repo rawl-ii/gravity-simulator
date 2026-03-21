@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <cmath>
 #include <numbers>
-#include <iostream>
 
 glm::vec3 SphereRenderer::ambient;
 glm::vec3 SphereRenderer::diffuse;

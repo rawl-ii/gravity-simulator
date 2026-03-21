@@ -2,7 +2,6 @@
 #include "engine/window.h"
 #include <memory>
 #include <vector>
-#include <iostream>
 
 class Scene {
 public:

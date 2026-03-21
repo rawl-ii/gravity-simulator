@@ -1,4 +1,5 @@
 #include "engine/json_reader.h"
+#include <fstream>
 using json = nlohmann::json;
 
 JsonFile::JsonFile(const std::string& path): 

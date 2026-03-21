@@ -3,8 +3,6 @@
 #include "game/entity_manager.h"
 #include "engine/grid_renderer.h"
 #include "engine/json_reader.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 std::unique_ptr<Window> Scene::window = nullptr;
@@ -106,6 +104,7 @@ void Scene::run() {
     while(!window->windowShouldClose()) {
         glClearColor(windowColor[0], windowColor[1], windowColor[2], windowColor[3]);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         float deltaTime = getDeltaTime();
 
         glm::mat4 view = Controller::getViewMatrix();
@@ -122,11 +121,11 @@ void Scene::run() {
         EntityManager::drawStars(Controller::getCameraPosition(), view, projection);
         EntityManager::drawPlanets(view, projection);
 
-        std::vector<objectsData> entities;
+        std::vector<objectsData> gridData;
         for(int i = 0; i < EntityManager::getEntitiesSize(); i++) {
-            entities.push_back({positions[i], masses[i]});
+            gridData.push_back({positions[i], masses[i]});
         }
-        Grid::draw(entities, view, projection);
+        Grid::draw(gridData, view, projection);
 
         Controller::reset();
         window->swapBuffers();

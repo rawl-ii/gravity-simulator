@@ -1,4 +1,5 @@
 #include "engine/window.h"
+#include <iostream>
 
 void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
