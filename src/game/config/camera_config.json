@@ -1,9 +1,11 @@
 {
-    "initial_position": [0.0, 0.0, 10.0],
+    "initial_position": [0.0, 0.0, -25.0],
 
     "near_plane": 0.1,
     "far_plane": 1000.0,
 
     "fov": 55.0,
-    "speed": 75.0
+    "sensitivity": 0.05,
+    "speed": 75.0,
+    "scroll_speed": 10.0
 }
