@@ -6,7 +6,7 @@
 
 class Scene {
 public:
-    static std::unique_ptr<win> window;
+    static std::unique_ptr<Window> window;
 
     static void init(const std::string& scenePath);
     static void run();

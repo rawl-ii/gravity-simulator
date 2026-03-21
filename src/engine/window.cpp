@@ -1,7 +1,7 @@
 #include "engine/window.h"
 
-void win::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-    win* self = static_cast<win*>(glfwGetWindowUserPointer(window));
+void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
     self->width = width;
     self->height = height;
@@ -9,7 +9,7 @@ void win::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-win::win(int width, int height, const std::string &title) {
+Window::Window(int width, int height, const std::string &title) {
     this->width = width;
     this->height = height;
 
@@ -37,12 +37,12 @@ win::win(int width, int height, const std::string &title) {
     }
 }
 
-GLFWwindow* win::getWindow() { return window; }
-int win::getWidth() { return width; }
-int win::getHeight() { return height; }
+GLFWwindow* Window::getWindow() { return window; }
+int Window::getWidth() { return width; }
+int Window::getHeight() { return height; }
 
-bool win::windowShouldClose() { return glfwWindowShouldClose(window); }
-void win::swapBuffers() { glfwSwapBuffers(window); }
+bool Window::windowShouldClose() { return glfwWindowShouldClose(window); }
+void Window::swapBuffers() { glfwSwapBuffers(window); }
 
-void win::pollEvents() { glfwPollEvents(); }
-void win::terminate() { glfwTerminate(); }
+void Window::pollEvents() { glfwPollEvents(); }
+void Window::terminate() { glfwTerminate(); }

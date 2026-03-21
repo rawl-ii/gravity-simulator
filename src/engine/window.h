@@ -3,9 +3,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-class win {
+class Window {
 public:
-    win(int width, int height, const std::string &title);
+    Window(int width, int height, const std::string &title);
 
     GLFWwindow* getWindow();
 
