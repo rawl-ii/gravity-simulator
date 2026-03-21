@@ -17,6 +17,7 @@ void Controller::init(GLFWwindow* win) {
     window = win;
     Keyboard::init(window);
 
+    glfwSetCursorPosCallback(window, cameraMouseCallback);
     changeCursorState();
 }
 
@@ -38,11 +39,12 @@ void Controller::cameraMouseCallback(GLFWwindow* win, double xOffset, double yOf
         lastY = static_cast<float>(yOffset);
 
         firstMovement = false;
+        return;
     }
 
     float xAngle = (lastX - xOffset) * cameraSensitivity;
     float yAngle = (lastY - yOffset) * cameraSensitivity;
-    
+
     lastX = xOffset;
     lastY = yOffset;
 
@@ -51,11 +53,9 @@ void Controller::cameraMouseCallback(GLFWwindow* win, double xOffset, double yOf
 
 void Controller::changeCursorState() {
     if(cursorEnabled) {
-        glfwSetCursorPosCallback(window, nullptr);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
     else {
-        glfwSetCursorPosCallback(window, cameraMouseCallback);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 }
@@ -87,21 +87,21 @@ void Controller::moveCameraKeyboard(float deltaTime) {
     if(Keyboard::isKeyDown(GLFW_KEY_W)) {
         Camera::move(Camera::getFront(), velocity);
     }
-    if(Keyboard::isKeyDown(GLFW_KEY_S)) {
+    else if(Keyboard::isKeyDown(GLFW_KEY_S)) {
         Camera::move(Camera::getFront(), -velocity);
     }
 
     if(Keyboard::isKeyDown(GLFW_KEY_D)) {
         Camera::move(Camera::getRight(), velocity);
     }
-    if(Keyboard::isKeyDown(GLFW_KEY_A)) {
+    else if(Keyboard::isKeyDown(GLFW_KEY_A)) {
         Camera::move(Camera::getRight(), -velocity);
     }
 
     if(Keyboard::isKeyDown(GLFW_KEY_E)) {
         Camera::move(Camera::getUp(), velocity);
     }
-    if(Keyboard::isKeyDown(GLFW_KEY_Q)) {
+    else if(Keyboard::isKeyDown(GLFW_KEY_Q)) {
         Camera::move(Camera::getUp(), -velocity);
     }
 }
