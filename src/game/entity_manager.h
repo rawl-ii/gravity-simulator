@@ -28,7 +28,10 @@ public:
 
     static std::vector<float> getMasses();
     static std::vector<float> getRadiuses();
+
     static std::vector<glm::vec3> getPositions();
+
+    static size_t getEntitiesSize();
 private:
     class Entity {
         friend class EntityManager;  

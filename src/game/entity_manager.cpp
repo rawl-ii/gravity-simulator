@@ -16,9 +16,10 @@ void EntityManager::init() {
 
 void EntityManager::terminate() {
     entities.clear();
+    entityRenderer.reset();
 
     SphereRenderer::terminate();
-}
+}   
 
 void EntityManager::addStar(physicsArgs pArgs, glm::vec3 color) {
     entities.emplace_back(new Entity(pArgs, color, ENTITY_TYPE::STAR));
@@ -100,6 +101,8 @@ std::vector<glm::vec3> EntityManager::getPositions() {
 
     return positions;
 }
+
+size_t EntityManager::getEntitiesSize() { return entities.size(); }
 
 float EntityManager::Entity::getMass() { return physics.getMass(); }
 float EntityManager::Entity::getRadius() { return physics.getRadius(); }
