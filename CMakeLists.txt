@@ -15,14 +15,16 @@ set(SOURCE_FILES
 
     src/glad/glad.c
 
+    src/engine/camera.cpp
+    src/engine/grid_renderer.cpp
+    src/engine/json_reader.cpp
+    src/engine/keyboard_manager.cpp
+    src/engine/physics.cpp
     src/engine/shader.cpp
     src/engine/sphere_renderer.cpp
-    src/engine/grid_renderer.cpp
-    src/engine/physics.cpp
     src/engine/window.cpp
-    src/engine/camera.cpp
-    src/engine/json_reader.cpp
 
+    src/game/controller.cpp
     src/game/entity_manager.cpp
     src/game/scene.cpp
 )
