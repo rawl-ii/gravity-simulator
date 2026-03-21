@@ -7,10 +7,10 @@ int main(int argc, char* argv[]) {
     }
 
     std::string path = argv[1];
-    scene::init(path);
+    Scene::init(path);
 
-    scene::run();
-    scene::terminate();
+    Scene::run();
+    Scene::terminate();
 
     return 0;
 }
