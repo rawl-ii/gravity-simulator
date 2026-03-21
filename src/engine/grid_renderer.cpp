@@ -1,6 +1,5 @@
 #include "engine/grid_renderer.h"
 #include <filesystem>
-#include <iostream>
 
 float gridConfig::SOFTENING;
 float gridConfig::INTESITY;
@@ -10,7 +9,7 @@ GLuint Grid::VAO;
 GLuint Grid::VBO;
 GLuint Grid::EBO;
 
-int Grid::division;
+int Grid::divisions;
 int Grid::lines;
 float Grid::step;
 
@@ -23,7 +22,7 @@ void Grid::init(int size, float stepSize) {
     if(isInitialized) { return; }
     
     lines = size;
-    division = size * 2;
+    divisions = size * 2;
     step = stepSize;
 
     const std::string basePath = std::filesystem::current_path().string();
@@ -50,10 +49,10 @@ void Grid::createGrid() {
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
 
-    for(int i = 0; i <= division; i++) {
+    for(int i = 0; i <= divisions; i++) {
         float z = static_cast<float>(i) - static_cast<float>(lines);
 
-        for(int j = 0; j <= division; j++) {
+        for(int j = 0; j <= divisions; j++) {
             float x = static_cast<float>(j) - static_cast<float>(lines);
 
             vertices.push_back(x * step);
@@ -62,16 +61,16 @@ void Grid::createGrid() {
         }
     }
 
-    int pointsPerLine = division + 1;
-    for(int i = 0; i <= division; i++) {
-        for(int j = 0; j < division; j++) {
+    int pointsPerLine = divisions + 1;
+    for(int i = 0; i <= divisions; i++) {
+        for(int j = 0; j < divisions; j++) {
             indices.push_back(i * pointsPerLine + j);
             indices.push_back(i * pointsPerLine + j + 1);
         }
     }
 
-    for (int j = 0; j <= division; j++) {
-        for (int i = 0; i < division; i++) {
+    for (int j = 0; j <= divisions; j++) {
+        for (int i = 0; i < divisions; i++) {
             indices.push_back(i * pointsPerLine + j);
             indices.push_back((i + 1) * pointsPerLine + j);
         }

@@ -1,7 +1,7 @@
 #pragma once
 #include "shader.h"
 #include <glad/glad.h>
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 #include <vector>
 #include <memory>
 
@@ -23,7 +23,7 @@ public:
 
     static void draw(std::vector<objectsData> objects, const glm::mat4 &view, const glm::mat4 &projection);
 
-    static int division;
+    static int divisions;
     static int lines;
     static float step;
 private:
