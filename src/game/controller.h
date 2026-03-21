@@ -18,9 +18,6 @@ public:
     static void moveCameraScroll();
     static void moveCameraKeyboard(float deltaTime);
 
-    static void enableCursor();
-    static void disableCursor();
-
     static glm::vec3 getCameraPosition();
     static void setCameraPosition(const glm::vec3 &newPosition);
 
