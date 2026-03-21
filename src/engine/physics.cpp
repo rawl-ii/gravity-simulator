@@ -28,7 +28,6 @@ glm::vec3 Physics::calculateGravity(const Physics& obj1, const Physics& obj2) {
     return force;
 }
 
-
 void Physics::applyForce(const glm::vec3 &force) {
     this->acceleration += force / this->mass;
 }
