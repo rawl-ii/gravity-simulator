@@ -9,6 +9,8 @@ std::unique_ptr<Window> Scene::window = nullptr;
 std::vector<float> Scene::windowColor;
 
 void Scene::createEntities(const std::string& jsonPath) {
+    // reading the JSON file and creating entities based on it
+
     JsonFile reader(jsonPath);
 
     for(auto& item : reader.dataFile) {
@@ -50,6 +52,9 @@ float Scene::getDeltaTime() {
 }
 
 void Scene::init(const std::string& ScenePath) {
+    /* reading data from all the JSON files 
+    and intializing core components */
+
     JsonFile cameraConfig("game/config/camera_config.json");
     JsonFile graphicConfig("game/config/render_config.json");
     JsonFile gridConfig("game/config/grid_config.json");
@@ -58,7 +63,6 @@ void Scene::init(const std::string& ScenePath) {
 
     Controller::cameraSpeed = cameraConfig.get<float>("speed");
     Controller::cameraScrollSpeed = cameraConfig.get<float>("scroll_speed");
-
     std::vector<float> CameraPos = cameraConfig.get<std::vector<float>>("initial_position");
     Controller::setCameraPosition(glm::vec3(CameraPos[0], CameraPos[1], CameraPos[2]));
 
@@ -99,8 +103,6 @@ void Scene::run() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Controller::moveCameraScroll();
-
     while(!window->windowShouldClose()) {
         glClearColor(windowColor[0], windowColor[1], windowColor[2], windowColor[3]);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -123,6 +125,8 @@ void Scene::run() {
 
         std::vector<objectsData> gridData;
         for(int i = 0; i < EntityManager::getEntitiesSize(); i++) {
+            /* getting the mass and position from all the entities 
+            to give to the grid shader */
             gridData.push_back({positions[i], masses[i]});
         }
         Grid::draw(gridData, view, projection);

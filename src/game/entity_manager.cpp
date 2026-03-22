@@ -37,6 +37,7 @@ void EntityManager::drawStars(const glm::vec3 &viewerPosition, const glm::mat4 &
 }
 
 void EntityManager::drawPlanets(const glm::mat4 &view, const glm::mat4 &projection) {    
+    // getting data for the planet shader
     std::vector<lightData> shaderData;
     for(auto& star : entities) {
         if(star->type == ENTITY_TYPE::STAR) {
@@ -54,6 +55,7 @@ void EntityManager::drawPlanets(const glm::mat4 &view, const glm::mat4 &projecti
 void EntityManager::updatePhysics(float deltaTime) {
     if(entities.size() < 2) { return; }
 
+    // calculate gravitational forces between all pairs of entities
     for(int i = 0; i < entities.size(); i++) {
         for(int j = i + 1; j < entities.size(); j++) {
             Physics &obj1 = entities[i]->physics;
@@ -73,6 +75,7 @@ void EntityManager::updatePhysics(float deltaTime) {
 
 std::vector<float> EntityManager::getMasses() {
     std::vector<float> masses;
+    masses.reserve(entities.size());
 
     for(auto& entity : entities) {
         masses.push_back(entity->getMass());
@@ -83,6 +86,7 @@ std::vector<float> EntityManager::getMasses() {
 
 std::vector<float> EntityManager::getRadiuses() {
     std::vector<float> radiuses;
+    radiuses.reserve(entities.size());
 
     for(auto& entity : entities) {
         radiuses.push_back(entity->getRadius());
@@ -93,6 +97,7 @@ std::vector<float> EntityManager::getRadiuses() {
 
 std::vector<glm::vec3> EntityManager::getPositions() {
     std::vector<glm::vec3> positions;
+    positions.reserve(entities.size());
 
     for(auto& entity : entities) {
         positions.push_back(entity->getPosition());
