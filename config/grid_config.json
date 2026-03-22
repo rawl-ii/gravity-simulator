@@ -1,6 +1,6 @@
 {
     "size": 400,
-    "step": 1.0,
+    "step": 2.5,
 
     "softening": 4.5, 
     "intensity": 0.5,

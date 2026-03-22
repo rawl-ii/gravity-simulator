@@ -46,14 +46,14 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
-set(CONFIG_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/game/config")
-set(CONFIG_DEST "${CMAKE_CURRENT_BINARY_DIR}/game/config")
+set(CONFIG_SRC "${CMAKE_CURRENT_SOURCE_DIR}/config")
+set(CONFIG_DEST "${CMAKE_CURRENT_BINARY_DIR}/config")
 
 file(MAKE_DIRECTORY ${CONFIG_DEST})
 
 add_custom_target(config_files ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/game/config
-        ${CMAKE_CURRENT_BINARY_DIR}/game/config
+        ${CMAKE_CURRENT_SOURCE_DIR}/config
+        ${CMAKE_CURRENT_BINARY_DIR}/config
     COMMENT "Updating JSON configuration files"
 )
