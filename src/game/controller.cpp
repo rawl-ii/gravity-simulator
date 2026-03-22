@@ -2,6 +2,7 @@
 #include "engine/camera.h"
 #include "engine/keyboard_manager.h"
 
+// defining static variables declared on controller.h
 bool Controller::cursorEnabled = false;
 GLFWwindow* Controller::window = nullptr;
 
@@ -17,7 +18,10 @@ void Controller::init(GLFWwindow* win) {
     window = win;
     Keyboard::init(window);
 
+    // set callbacks for mouse and scroll input
     glfwSetCursorPosCallback(window, cameraMouseCallback);
+    glfwSetScrollCallback(window, cameraScrollCallback);
+
     changeCursorState();
 }
 
@@ -30,11 +34,16 @@ void Controller::cameraMouseCallback(GLFWwindow* win, double xOffset, double yOf
     static float lastX, lastY;
 
     if(cursorEnabled) {
+        //if the cursor is enabled, dont move the camera
         firstMovement = true;
         return;
     }
 
     if(firstMovement) {
+        /* this is to make sure that the camera dont jump to a random 
+        angle when the game starts, since the 
+        mouse position is not at (0, 0) */
+
         lastX = static_cast<float>(xOffset);
         lastY = static_cast<float>(yOffset);
 
@@ -48,6 +57,7 @@ void Controller::cameraMouseCallback(GLFWwindow* win, double xOffset, double yOf
     lastX = xOffset;
     lastY = yOffset;
 
+    // sending the data to the actual camera
     Camera::setAngle(xAngle, yAngle);
 }
 
@@ -68,15 +78,13 @@ void Controller::moveCameraAngle() {
 }
 
 void Controller::cameraScrollCallback(GLFWwindow* win, double, double yOffset) {
+    // read scroll input to move the camera
     float velocity = cameraScrollSpeed * static_cast<float>(yOffset);
     Camera::move(Camera::getFront(), velocity);
 }
 
-void Controller::moveCameraScroll() {
-    glfwSetScrollCallback(window, cameraScrollCallback);
-}
-
 void Controller::moveCameraKeyboard(float deltaTime) {
+    // read keyboard input to move the camera
     float velocity = cameraSpeed;
 
     if(Keyboard::isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
@@ -110,7 +118,7 @@ glm::vec3 Controller::getCameraPosition() { return Camera::position; }
 
 void Controller::setCameraPosition(const glm::vec3 &newPosition) {
     Camera::position = newPosition;
-} 
+}
 
 glm::mat4 Controller::getViewMatrix() { return Camera::getViewMatrix(); }
 

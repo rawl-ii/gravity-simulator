@@ -15,7 +15,6 @@ public:
     static void reset();
 
     static void moveCameraAngle();
-    static void moveCameraScroll();
     static void moveCameraKeyboard(float deltaTime);
 
     static glm::vec3 getCameraPosition();
